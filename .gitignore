@@ -1,0 +1,39 @@
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Antigravity
+.antigravityignore
+
+# ─── Backend (Laravel) ───
+be-WMS/vendor/
+be-WMS/node_modules/
+be-WMS/.env
+be-WMS/.env.backup
+be-WMS/.env.production
+be-WMS/storage/*.key
+be-WMS/storage/app/public/invoices/
+be-WMS/storage/framework/cache/data/*
+be-WMS/storage/framework/sessions/*
+be-WMS/storage/framework/views/*
+be-WMS/storage/logs/*
+be-WMS/bootstrap/cache/*
+be-WMS/public/hot
+be-WMS/public/storage
+
+# ─── Frontend (React/Vite) ───
+fe-WMS/node_modules/
+fe-WMS/dist/
+fe-WMS/.env
+fe-WMS/.env.local
+fe-WMS/.env.production
+
+# Docker volumes
+be-WMS/wms_mysql_data/
