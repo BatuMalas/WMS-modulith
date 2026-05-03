@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Row, Col, Card, Spinner, Table, Badge, ProgressBar } from "react-bootstrap";
+import { Row, Col, Card, Spinner, Table, Badge, ProgressBar, InputGroup, Form } from "react-bootstrap";
 import {
   FaBoxes, FaMoneyBillWave, FaExclamationTriangle, FaExchangeAlt,
   FaArrowDown, FaArrowUp, FaClock, FaTruck, FaUsers, FaUserFriends,
-  FaHistory, FaChartLine
+  FaHistory, FaChartLine, FaUserCircle, FaCalendarAlt, FaSearch
 } from "react-icons/fa";
 import { useAuth } from "../../context/AuthContext";
 import DashboardService from "../../services/dashboardService";
@@ -28,30 +28,23 @@ function formatNumber(num) {
 
 // ─── Stat Card ───
 
-function StatCard({ icon, label, value, subtitle, gradient, iconBg }) {
+function StatCard({ label, value, subtitle, icon, colorHex = "#0dcaf0" }) {
   return (
-    <Col xl={3} md={6} className="mb-4">
-      <Card className="border-0 shadow-sm h-100 stat-card" style={{ overflow: "hidden" }}>
-        <Card.Body className="position-relative p-4">
-          <div className="d-flex align-items-start justify-content-between">
-            <div>
-              <p className="text-muted mb-1" style={{ fontSize: "0.8rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.5px" }}>
-                {label}
-              </p>
-              <h3 className="fw-bold mb-1" style={{ fontSize: "1.6rem" }}>{value}</h3>
-              {subtitle && <small className="text-muted">{subtitle}</small>}
+    <Col xl={4} md={6} className="mb-4">
+      <Card className="shadow-sm h-100 border-0" style={{ borderRadius: "16px" }}>
+        <Card.Body className="p-4 position-relative">
+          <div className="d-flex flex-column">
+            <div className="d-flex align-items-center mb-2">
+              {icon && (
+                <div className="d-flex align-items-center justify-content-center text-white me-2 rounded-circle shadow-sm"
+                     style={{ width: "36px", height: "36px", backgroundColor: colorHex }}>
+                  {icon}
+                </div>
+              )}
             </div>
-            <div
-              className="rounded-3 d-flex align-items-center justify-content-center"
-              style={{
-                width: 52,
-                height: 52,
-                background: gradient || iconBg || "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                flexShrink: 0,
-              }}
-            >
-              <span style={{ fontSize: "1.3rem", color: "#fff" }}>{icon}</span>
-            </div>
+            <h6 className="fw-bold mb-1" style={{ fontSize: "1.1rem", color: colorHex }}>{label}</h6>
+            <h2 className="fw-bolder text-dark mb-1" style={{ fontSize: "2.2rem" }}>{value}</h2>
+            {subtitle && <small className="text-muted">{subtitle}</small>}
           </div>
         </Card.Body>
       </Card>
@@ -74,9 +67,9 @@ function SectionHeader({ icon, title }) {
 function LowStockTable({ items = [] }) {
   if (!items.length) {
     return (
-      <Card className="border-0 shadow-sm h-100">
-        <Card.Header className="bg-white border-bottom-0 pt-4 px-4">
-          <h6 className="fw-bold mb-0">⚠️ Barang Low Stock</h6>
+      <Card className="shadow-sm h-100 border-0" style={{ borderRadius: "16px" }}>
+        <Card.Header className="bg-white border-bottom-0 pt-4 px-4" style={{ borderRadius: "16px 16px 0 0" }}>
+          <h5 className="fw-bold text-dark mb-0">Low Stock Alerts</h5>
         </Card.Header>
         <Card.Body className="d-flex align-items-center justify-content-center text-muted" style={{ minHeight: 200 }}>
           Semua stok dalam kondisi aman 👍
@@ -86,10 +79,10 @@ function LowStockTable({ items = [] }) {
   }
 
   return (
-    <Card className="border-0 shadow-sm h-100">
-      <Card.Header className="bg-white border-bottom-0 pt-4 px-4">
+    <Card className="shadow-sm h-100 border-0" style={{ borderRadius: "16px" }}>
+      <Card.Header className="bg-white border-bottom-0 pt-4 px-4" style={{ borderRadius: "16px 16px 0 0" }}>
         <div className="d-flex justify-content-between align-items-center">
-          <h6 className="fw-bold mb-0">⚠️ Barang Low Stock</h6>
+          <h5 className="fw-bold text-dark mb-0">Low Stock Alerts</h5>
           <Badge bg="danger" className="rounded-pill">{items.length} item</Badge>
         </div>
         <small className="text-muted">Stok di bawah batas minimum</small>
@@ -137,9 +130,9 @@ function LowStockTable({ items = [] }) {
 function TopSupplierTable({ suppliers = [] }) {
   if (!suppliers.length) {
     return (
-      <Card className="border-0 shadow-sm h-100">
-        <Card.Header className="bg-white border-bottom-0 pt-4 px-4">
-          <h6 className="fw-bold mb-0">🏭 Supplier Paling Aktif</h6>
+      <Card className="shadow-sm h-100 border-0" style={{ borderRadius: "16px" }}>
+        <Card.Header className="bg-white border-bottom-0 pt-4 px-4" style={{ borderRadius: "16px 16px 0 0" }}>
+          <h5 className="fw-bold text-dark mb-0">Supplier Paling Aktif</h5>
         </Card.Header>
         <Card.Body className="d-flex align-items-center justify-content-center text-muted" style={{ minHeight: 200 }}>
           Belum ada data supplier
@@ -149,9 +142,9 @@ function TopSupplierTable({ suppliers = [] }) {
   }
 
   return (
-    <Card className="border-0 shadow-sm h-100">
-      <Card.Header className="bg-white border-bottom-0 pt-4 px-4">
-        <h6 className="fw-bold mb-0">🏭 Supplier Paling Aktif</h6>
+    <Card className="shadow-sm h-100 border-0" style={{ borderRadius: "16px" }}>
+      <Card.Header className="bg-white border-bottom-0 pt-4 px-4" style={{ borderRadius: "16px 16px 0 0" }}>
+        <h5 className="fw-bold text-dark mb-0">Supplier Paling Aktif</h5>
         <small className="text-muted">Berdasarkan total transaksi yang disetujui</small>
       </Card.Header>
       <Card.Body className="p-0">
@@ -193,59 +186,71 @@ function TopSupplierTable({ suppliers = [] }) {
 
 // ─── Stock Mutation Log ───
 
-function MutationLog({ mutations = [] }) {
-  if (!mutations.length) {
+function MutationLog({ mutations = [], searchQuery = "" }) {
+  const filtered = mutations.filter(m => {
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      if (!m.kode_transaksi.toLowerCase().includes(q) && 
+          !m.barang.toLowerCase().includes(q) && 
+          !m.approved_by?.toLowerCase().includes(q)) return false;
+    }
+    return true;
+  });
+
+  if (!filtered.length) {
     return (
-      <Card className="border-0 shadow-sm">
-        <Card.Header className="bg-white border-bottom-0 pt-4 px-4">
-          <h6 className="fw-bold mb-0">📋 Log Mutasi Stok Terbaru</h6>
-        </Card.Header>
-        <Card.Body className="d-flex align-items-center justify-content-center text-muted" style={{ minHeight: 120 }}>
-          Belum ada mutasi stok
+      <Card className="shadow-sm border-0 mb-4" style={{ borderRadius: "16px" }}>
+        <Card.Body className="p-4 text-center text-muted">
+          Belum ada mutasi stok yang sesuai dengan filter.
         </Card.Body>
       </Card>
     );
   }
 
   return (
-    <Card className="border-0 shadow-sm">
-      <Card.Header className="bg-white border-bottom-0 pt-4 px-4">
-        <h6 className="fw-bold mb-0">📋 Log Mutasi Stok Terbaru</h6>
+    <Card className="shadow-sm border-0 mb-4" style={{ borderRadius: "16px" }}>
+      <Card.Header className="bg-white border-bottom-0 pt-4 px-4 pb-3" style={{ borderRadius: "16px 16px 0 0" }}>
+        <h5 className="fw-bold text-dark mb-0">Log Mutasi Stok Terbaru</h5>
         <small className="text-muted">Transaksi yang sudah disetujui</small>
       </Card.Header>
-      <Card.Body className="p-0">
-        <Table hover responsive className="mb-0" size="sm">
-          <thead className="table-light">
+      <Card.Body className="p-0 pb-3">
+        <Table hover responsive className="mb-0" style={{ borderTop: "1px solid #f0f0f0" }}>
+          <thead className="bg-light text-dark">
             <tr>
-              <th style={{ fontSize: "0.75rem" }}>Kode</th>
-              <th style={{ fontSize: "0.75rem" }}>Jenis</th>
-              <th style={{ fontSize: "0.75rem" }}>Barang</th>
-              <th style={{ fontSize: "0.75rem" }} className="text-center">Jumlah</th>
-              <th style={{ fontSize: "0.75rem" }}>Disetujui Oleh</th>
-              <th style={{ fontSize: "0.75rem" }}>Waktu</th>
+              <th className="border-0 px-4 py-3" style={{ borderRadius: "10px 0 0 10px" }}>Kode</th>
+              <th className="border-0 py-3">Jenis</th>
+              <th className="border-0 py-3">Barang</th>
+              <th className="border-0 py-3 text-center">Jumlah</th>
+              <th className="border-0 py-3">Disetujui Oleh</th>
+              <th className="border-0 px-4 py-3" style={{ borderRadius: "0 10px 10px 0" }}>Waktu</th>
             </tr>
           </thead>
           <tbody>
-            {mutations.map((m, i) => (
-              <tr key={i}>
-                <td style={{ fontSize: "0.8rem" }}>
-                  <code style={{ fontSize: "0.75rem" }}>{m.kode_transaksi}</code>
+            {filtered.map((m, i) => (
+              <tr key={i} className="align-middle">
+                <td className="px-4 py-3" style={{ borderBottom: "1px solid #f0f0f0" }}>
+                  <span className="fw-semibold" style={{ color: m.jenis === 'masuk' ? '#ec4899' : '#ec4899' }}>{m.kode_transaksi}</span>
                 </td>
-                <td>
+                <td className="py-3" style={{ borderBottom: "1px solid #f0f0f0" }}>
                   {m.jenis === "masuk" ? (
-                    <Badge bg="success" className="d-inline-flex align-items-center gap-1">
+                    <Badge bg="white" text="success" border="success" className="border border-success rounded-pill px-3 py-2 fw-normal d-inline-flex align-items-center gap-1 shadow-sm">
                       <FaArrowDown size={10} /> Masuk
                     </Badge>
                   ) : (
-                    <Badge bg="danger" className="d-inline-flex align-items-center gap-1">
+                    <Badge bg="white" text="danger" border="danger" className="border border-danger rounded-pill px-3 py-2 fw-normal d-inline-flex align-items-center gap-1 shadow-sm">
                       <FaArrowUp size={10} /> Keluar
                     </Badge>
                   )}
                 </td>
-                <td style={{ fontSize: "0.8rem" }} className="fw-semibold">{m.barang}</td>
-                <td className="text-center fw-bold" style={{ fontSize: "0.8rem" }}>{formatNumber(m.jumlah)}</td>
-                <td style={{ fontSize: "0.8rem" }}>{m.approved_by}</td>
-                <td style={{ fontSize: "0.8rem" }} className="text-muted">{m.approved_at}</td>
+                <td className="py-3 fw-semibold text-dark" style={{ borderBottom: "1px solid #f0f0f0" }}>{m.barang}</td>
+                <td className="py-3 text-center fw-bold text-dark" style={{ borderBottom: "1px solid #f0f0f0" }}>{formatNumber(m.jumlah)}</td>
+                <td className="py-3" style={{ borderBottom: "1px solid #f0f0f0" }}>
+                  <div className="d-flex align-items-center gap-2">
+                    <FaUserCircle size={20} className="text-secondary" />
+                    <span className="text-dark">{m.approved_by}</span>
+                  </div>
+                </td>
+                <td className="px-4 py-3 text-muted" style={{ borderBottom: "1px solid #f0f0f0" }}>{m.approved_at}</td>
               </tr>
             ))}
           </tbody>
@@ -257,8 +262,16 @@ function MutationLog({ mutations = [] }) {
 
 // ─── Activity Log ───
 
-function ActivityLogSection({ activities = [] }) {
-  if (!activities.length) return null;
+function ActivityLogSection({ activities = [], searchQuery = "" }) {
+  const filtered = activities.filter(a => {
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      if (!a.user.toLowerCase().includes(q) && !a.action.toLowerCase().includes(q) && !a.description.toLowerCase().includes(q)) return false;
+    }
+    return true;
+  });
+
+  if (!filtered.length) return null;
 
   const actionColors = {
     login: "primary",
@@ -268,37 +281,41 @@ function ActivityLogSection({ activities = [] }) {
   };
 
   return (
-    <Card className="border-0 shadow-sm">
-      <Card.Header className="bg-white border-bottom-0 pt-4 px-4">
-        <h6 className="fw-bold mb-0">👤 Aktivitas User Terbaru</h6>
+    <Card className="shadow-sm border-0 mb-4" style={{ borderRadius: "16px" }}>
+      <Card.Header className="bg-white border-bottom-0 pt-4 px-4 pb-3" style={{ borderRadius: "16px 16px 0 0" }}>
+        <h5 className="fw-bold text-dark mb-0">Aktivitas User Terbaru</h5>
         <small className="text-muted">Log aktivitas staff gudang</small>
       </Card.Header>
-      <Card.Body className="p-0">
-        <Table hover responsive className="mb-0" size="sm">
-          <thead className="table-light">
+      <Card.Body className="p-0 pb-3">
+        <Table hover responsive className="mb-0" style={{ borderTop: "1px solid #f0f0f0" }}>
+          <thead className="bg-light text-dark">
             <tr>
-              <th style={{ fontSize: "0.75rem" }}>Waktu</th>
-              <th style={{ fontSize: "0.75rem" }}>User</th>
-              <th style={{ fontSize: "0.75rem" }}>Aksi</th>
-              <th style={{ fontSize: "0.75rem" }}>Deskripsi</th>
+              <th className="border-0 px-4 py-3" style={{ borderRadius: "10px 0 0 10px" }}>Waktu</th>
+              <th className="border-0 py-3">User</th>
+              <th className="border-0 py-3">Aksi</th>
+              <th className="border-0 px-4 py-3" style={{ borderRadius: "0 10px 10px 0" }}>Deskripsi</th>
             </tr>
           </thead>
           <tbody>
-            {activities.map((a, i) => (
-              <tr key={i}>
-                <td style={{ fontSize: "0.8rem" }} className="text-muted text-nowrap">{a.created_at}</td>
-                <td style={{ fontSize: "0.8rem" }}>
-                  <span className="fw-semibold">{a.user}</span>
-                  {a.role && a.role !== "-" && (
-                    <Badge bg="light" text="dark" className="ms-1" style={{ fontSize: "0.65rem" }}>{a.role}</Badge>
-                  )}
+            {filtered.map((a, i) => (
+              <tr key={i} className="align-middle">
+                <td className="px-4 py-3 text-muted text-nowrap" style={{ borderBottom: "1px solid #f0f0f0" }}>{a.created_at}</td>
+                <td className="py-3" style={{ borderBottom: "1px solid #f0f0f0" }}>
+                  <div className="d-flex align-items-center gap-2">
+                    <span className="fw-semibold text-dark">{a.user}</span>
+                    {a.role && a.role !== "-" && (
+                      <Badge bg="light" text="dark" className="rounded-pill px-2 py-1 fw-normal text-capitalize shadow-sm" style={{ fontSize: "0.75rem" }}>
+                        {a.role}
+                      </Badge>
+                    )}
+                  </div>
                 </td>
-                <td>
-                  <Badge bg={actionColors[a.action] || "secondary"} style={{ fontSize: "0.7rem" }}>
+                <td className="py-3" style={{ borderBottom: "1px solid #f0f0f0" }}>
+                  <Badge bg={actionColors[a.action] || "secondary"} className="rounded-pill px-3 py-2 fw-normal shadow-sm text-capitalize">
                     {a.action.replace(/_/g, " ")}
                   </Badge>
                 </td>
-                <td style={{ fontSize: "0.8rem" }}>{a.description}</td>
+                <td className="px-4 py-3 text-dark" style={{ borderBottom: "1px solid #f0f0f0" }}>{a.description}</td>
               </tr>
             ))}
           </tbody>
@@ -317,12 +334,34 @@ export default function Dashboard() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    DashboardService.getSummary()
+  const [logStartDate, setLogStartDate] = useState("");
+  const [logEndDate, setLogEndDate] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const fetchData = (isInitial = false) => {
+    if (isInitial) setLoading(true);
+    const params = {};
+    if (logStartDate) params.start_date = logStartDate;
+    if (logEndDate) params.end_date = logEndDate;
+
+    DashboardService.getSummary({ params })
       .then(res => setData(res.data.data))
       .catch(() => {})
-      .finally(() => setLoading(false));
+      .finally(() => {
+        if (isInitial) setLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    fetchData(true);
   }, []);
+
+  useEffect(() => {
+    if (data !== null) {
+      fetchData(false);
+    }
+    // eslint-disable-next-line
+  }, [logStartDate, logEndDate]);
 
   if (loading) {
     return (
@@ -341,7 +380,7 @@ export default function Dashboard() {
       <div className="dashboard-admin">
         {/* Header */}
         <div className="mb-4">
-          <h4 className="fw-bold mb-1">📊 Dashboard Admin</h4>
+          <h4 className="fw-bold mb-1 text-dark">Dashboard</h4>
           <p className="text-muted mb-0">
             Selamat datang, <strong>{user?.name}</strong>! Berikut ringkasan gudang Anda.
           </p>
@@ -350,69 +389,25 @@ export default function Dashboard() {
         {/* Section 1: Top Stat Cards */}
         <Row>
           <StatCard
-            icon={<FaBoxes />}
-            label="Total Stok"
+            label="Total Stock"
             value={formatNumber(data?.total_stok || 0)}
             subtitle={`${formatNumber(data?.total_barang || 0)} jenis barang`}
-            gradient="linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+            icon={<FaBoxes size={18} />}
+            colorHex="#ec4899"
           />
           <StatCard
-            icon={<FaMoneyBillWave />}
-            label="Nilai Aset"
+            label="Asset Value"
             value={formatRupiah(data?.total_nilai_aset || 0)}
             subtitle="Total nilai seluruh inventory"
-            gradient="linear-gradient(135deg, #11998e 0%, #38ef7d 100%)"
+            icon={<FaMoneyBillWave size={18} />}
+            colorHex="#f97316"
           />
           <StatCard
-            icon={<FaExclamationTriangle />}
-            label="Low Stock"
+            label="Low Stock Alerts"
             value={data?.low_stock_count || 0}
             subtitle="Barang di bawah stok minimum"
-            gradient={
-              (data?.low_stock_count || 0) > 0
-                ? "linear-gradient(135deg, #eb3349 0%, #f45c43 100%)"
-                : "linear-gradient(135deg, #56ab2f 0%, #a8e063 100%)"
-            }
-          />
-          <StatCard
-            icon={<FaExchangeAlt />}
-            label="Transaksi Hari Ini"
-            value={data?.total_transaksi_hari_ini || 0}
-            subtitle={`↓${data?.transaksi_masuk_hari_ini || 0} masuk · ↑${data?.transaksi_keluar_hari_ini || 0} keluar`}
-            gradient="linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)"
-          />
-        </Row>
-
-        {/* Row 2: Quick Info Cards */}
-        <Row className="mb-2">
-          <StatCard
-            icon={<FaTruck />}
-            label="Total Supplier"
-            value={data?.total_supplier || 0}
-            gradient="linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)"
-          />
-          <StatCard
-            icon={<FaUserFriends />}
-            label="Total Customer"
-            value={data?.total_customer || 0}
-            gradient="linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)"
-          />
-          <StatCard
-            icon={<FaUsers />}
-            label="Total Pengguna"
-            value={data?.total_users || 0}
-            gradient="linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%)"
-          />
-          <StatCard
-            icon={<FaClock />}
-            label="Pending Approval"
-            value={data?.pending_count || 0}
-            subtitle="Menunggu persetujuan manajer"
-            gradient={
-              (data?.pending_count || 0) > 0
-                ? "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)"
-                : "linear-gradient(135deg, #c3cfe2 0%, #f5f7fa 100%)"
-            }
+            icon={<FaExclamationTriangle size={18} />}
+            colorHex="#3b82f6"
           />
         </Row>
 
@@ -443,17 +438,38 @@ export default function Dashboard() {
           </Col>
         </Row>
 
-        {/* Section 5: Stock Mutation Log */}
+        {/* Section 5 & 6: Logs with Filters */}
+        <div className="d-flex flex-wrap gap-3 mb-3 mt-5 align-items-center bg-white p-3 shadow-sm" style={{ borderRadius: "16px" }}>
+           <InputGroup style={{ maxWidth: 200 }}>
+              <InputGroup.Text className="bg-light border-0 text-muted"><FaCalendarAlt /></InputGroup.Text>
+              <Form.Control type="date" className="bg-light border-0 text-muted" value={logStartDate} onChange={e => setLogStartDate(e.target.value)} />
+           </InputGroup>
+           <span className="text-muted" style={{ fontSize: "0.8rem" }}>s/d</span>
+           <InputGroup style={{ maxWidth: 200 }}>
+              <InputGroup.Text className="bg-light border-0 text-muted"><FaCalendarAlt /></InputGroup.Text>
+              <Form.Control type="date" className="bg-light border-0 text-muted" value={logEndDate} onChange={e => setLogEndDate(e.target.value)} />
+           </InputGroup>
+           
+           <InputGroup style={{ maxWidth: 300 }} className="ms-auto">
+             <InputGroup.Text className="bg-light border-0 text-muted"><FaSearch /></InputGroup.Text>
+             <Form.Control 
+               className="bg-light border-0"
+               placeholder="Cari Log..." 
+               value={searchQuery} 
+               onChange={e => setSearchQuery(e.target.value)} 
+             />
+           </InputGroup>
+        </div>
+
         <Row className="mb-4">
           <Col xs={12}>
-            <MutationLog mutations={data?.recent_mutations} />
+            <MutationLog mutations={data?.recent_mutations} searchQuery={searchQuery} />
           </Col>
         </Row>
 
-        {/* Section 6: User Activity Log */}
         <Row className="mb-4">
           <Col xs={12}>
-            <ActivityLogSection activities={data?.recent_activities} />
+            <ActivityLogSection activities={data?.recent_activities} searchQuery={searchQuery} />
           </Col>
         </Row>
       </div>
@@ -465,7 +481,7 @@ export default function Dashboard() {
     return (
       <div className="dashboard-manajer">
         <div className="mb-4">
-          <h4 className="fw-bold mb-1">📊 Dashboard Manajer</h4>
+          <h4 className="fw-bold mb-1 text-dark">Dashboard</h4>
           <p className="text-muted mb-0">
             Selamat datang, <strong>{user?.name}</strong>!
           </p>
@@ -473,30 +489,19 @@ export default function Dashboard() {
 
         <Row>
           <StatCard
-            icon={<FaBoxes />}
-            label="Total Stok"
+            label="Total Stock"
             value={formatNumber(data?.total_stok || 0)}
             subtitle={`${formatNumber(data?.total_barang || 0)} jenis barang`}
-            gradient="linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
           />
           <StatCard
-            icon={<FaClock />}
-            label="Transaksi Pending"
-            value={data?.pending_count || 0}
-            subtitle="Menunggu approval Anda"
-            gradient="linear-gradient(135deg, #f093fb 0%, #f5576c 100%)"
+            label="Asset Value"
+            value={formatRupiah(data?.total_nilai_aset || 0)}
+            subtitle="Total nilai seluruh inventory"
           />
           <StatCard
-            icon={<FaArrowDown />}
-            label="Masuk Hari Ini"
-            value={data?.transaksi_masuk_hari_ini || 0}
-            gradient="linear-gradient(135deg, #11998e 0%, #38ef7d 100%)"
-          />
-          <StatCard
-            icon={<FaArrowUp />}
-            label="Keluar Hari Ini"
-            value={data?.transaksi_keluar_hari_ini || 0}
-            gradient="linear-gradient(135deg, #eb3349 0%, #f45c43 100%)"
+            label="Low Stock Alerts"
+            value={data?.low_stock_count || 0}
+            subtitle="Barang di bawah stok minimum"
           />
         </Row>
 
@@ -507,11 +512,36 @@ export default function Dashboard() {
         </Row>
 
         <Row className="mb-4">
-          <Col lg={6}>
+          <Col lg={12}>
             <LowStockTable items={data?.low_stock_items} />
           </Col>
-          <Col lg={6}>
-            <MutationLog mutations={data?.recent_mutations} />
+        </Row>
+
+        <div className="d-flex flex-wrap gap-3 mb-3 mt-5 align-items-center bg-white p-3 shadow-sm" style={{ borderRadius: "16px" }}>
+           <InputGroup style={{ maxWidth: 200 }}>
+              <InputGroup.Text className="bg-light border-0 text-muted"><FaCalendarAlt /></InputGroup.Text>
+              <Form.Control type="date" className="bg-light border-0 text-muted" value={logStartDate} onChange={e => setLogStartDate(e.target.value)} />
+           </InputGroup>
+           <span className="text-muted" style={{ fontSize: "0.8rem" }}>s/d</span>
+           <InputGroup style={{ maxWidth: 200 }}>
+              <InputGroup.Text className="bg-light border-0 text-muted"><FaCalendarAlt /></InputGroup.Text>
+              <Form.Control type="date" className="bg-light border-0 text-muted" value={logEndDate} onChange={e => setLogEndDate(e.target.value)} />
+           </InputGroup>
+           
+           <InputGroup style={{ maxWidth: 300 }} className="ms-auto">
+             <InputGroup.Text className="bg-light border-0 text-muted"><FaSearch /></InputGroup.Text>
+             <Form.Control 
+               className="bg-light border-0"
+               placeholder="Cari Log..." 
+               value={searchQuery} 
+               onChange={e => setSearchQuery(e.target.value)} 
+             />
+           </InputGroup>
+        </div>
+
+        <Row className="mb-4">
+          <Col xs={12}>
+            <MutationLog mutations={data?.recent_mutations} searchQuery={searchQuery} />
           </Col>
         </Row>
       </div>
@@ -523,7 +553,7 @@ export default function Dashboard() {
     return (
       <div className="dashboard-petugas">
         <div className="mb-4">
-          <h4 className="fw-bold mb-1">📊 Dashboard Petugas</h4>
+          <h4 className="fw-bold mb-1 text-dark">Dashboard</h4>
           <p className="text-muted mb-0">
             Selamat datang, <strong>{user?.name}</strong>!
           </p>
@@ -531,28 +561,25 @@ export default function Dashboard() {
 
         <Row>
           <StatCard
-            icon={<FaBoxes />}
             label="Total Barang"
             value={formatNumber(data?.total_barang || 0)}
-            gradient="linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+            subtitle="Jumlah jenis barang terdaftar"
+            icon={<FaBoxes size={18} />}
+            colorHex="#ec4899"
           />
           <StatCard
-            icon={<FaArrowDown />}
             label="Masuk Hari Ini"
             value={data?.transaksi_masuk_hari_ini || 0}
-            gradient="linear-gradient(135deg, #11998e 0%, #38ef7d 100%)"
+            subtitle="Transaksi masuk"
+            icon={<FaArrowDown size={18} />}
+            colorHex="#14b8a6"
           />
           <StatCard
-            icon={<FaArrowUp />}
             label="Keluar Hari Ini"
             value={data?.transaksi_keluar_hari_ini || 0}
-            gradient="linear-gradient(135deg, #eb3349 0%, #f45c43 100%)"
-          />
-          <StatCard
-            icon={<FaChartLine />}
-            label="Total Transaksi"
-            value={data?.total_transaksi_hari_ini || 0}
-            gradient="linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)"
+            subtitle="Transaksi keluar"
+            icon={<FaArrowUp size={18} />}
+            colorHex="#f97316"
           />
         </Row>
       </div>

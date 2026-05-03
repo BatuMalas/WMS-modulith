@@ -30,9 +30,32 @@ import {
   FaArrowDown,
   FaClock,
   FaCalendarTimes,
+  FaChevronLeft,
+  FaChevronRight,
 } from "react-icons/fa";
 import api from "../../services/api";
 import KategoriService from "../../services/kategoriService";
+
+function StatCard({ label, value, icon, colorHex }) {
+  return (
+    <Col xl={3} md={6} className="mb-4">
+      <Card className="shadow-sm h-100 border-0" style={{ borderRadius: "16px" }}>
+        <Card.Body className="p-4 position-relative">
+          <div className="d-flex flex-column">
+            <div className="d-flex align-items-center mb-2">
+              <div className="d-flex align-items-center justify-content-center text-white me-2 rounded-circle shadow-sm"
+                style={{ width: "36px", height: "36px", backgroundColor: colorHex }}>
+                {icon}
+              </div>
+            </div>
+            <h6 className="fw-bold mb-1" style={{ fontSize: "1.1rem", color: colorHex }}>{label}</h6>
+            <h2 className="fw-bolder text-dark mb-0" style={{ fontSize: "2.2rem" }}>{value}</h2>
+          </div>
+        </Card.Body>
+      </Card>
+    </Col>
+  );
+}
 
 export default function BarangPage() {
   // State Management
@@ -42,6 +65,14 @@ export default function BarangPage() {
   const [filter, setFilter] = useState("all");
   const [kategoriList, setKategoriList] = useState([]);
   const [filterKategori, setFilterKategori] = useState("");
+
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 20;
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, filter, filterKategori]);
 
   // Modal States
   const [showAddModal, setShowAddModal] = useState(false);
@@ -132,6 +163,9 @@ export default function BarangPage() {
     if (filter === "out") return matchesSearch && matchesKategori && item.stok === 0;
     return matchesSearch && matchesKategori;
   });
+
+  const totalPages = Math.ceil(filteredBarang.length / itemsPerPage);
+  const paginatedBarang = filteredBarang.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   // CRUD Operations
   const handleAddBarang = async (e) => {
@@ -233,10 +267,10 @@ export default function BarangPage() {
   };
 
   const getStatusBadge = (stok) => {
-    if (stok === 0) return <Badge bg="danger">Habis</Badge>;
-    if (stok < 5) return <Badge bg="warning">Hampir Habis</Badge>;
-    if (stok < 10) return <Badge bg="info">Sedikit</Badge>;
-    return <Badge bg="success">Tersedia</Badge>;
+    if (stok === 0) return <Badge bg="danger" pill className="px-3 py-2 fw-normal">Habis</Badge>;
+    if (stok < 5) return <Badge bg="warning" pill className="px-3 py-2 fw-normal text-dark">Hampir Habis</Badge>;
+    if (stok < 10) return <Badge bg="info" pill className="px-3 py-2 fw-normal">Sedikit</Badge>;
+    return <Badge bg="success" pill className="px-3 py-2 fw-normal">Tersedia</Badge>;
   };
 
   const getStockColor = (stok) => {
@@ -271,23 +305,22 @@ export default function BarangPage() {
       <Row className="mb-4">
         <Col>
           <h1 className="fw-bold">
-            <FaBox className="me-2" />
             Manajemen Barang
           </h1>
           <p className="text-muted">Kelola data barang di gudang — dilengkapi tracking batch FIFO</p>
         </Col>
         <Col className="text-end">
-          <Button variant="primary" onClick={() => setShowAddModal(true)}>
+          <Button variant="primary" className="rounded-pill px-4 shadow-sm" onClick={() => setShowAddModal(true)}>
             <FaPlus className="me-2" /> Tambah Barang
           </Button>
         </Col>
       </Row>
 
       {/* Filter & Search */}
-      <Card className="mb-4 border-0 shadow-sm">
+      <Card className="mb-4 border-0 shadow-sm" style={{ borderRadius: "16px" }}>
         <Card.Body>
-          <Row>
-            <Col md={8}>
+          <Row className="align-items-center">
+            <Col md={5} className="mb-2 mb-md-0">
               <InputGroup>
                 <InputGroup.Text>
                   <FaSearch />
@@ -299,7 +332,7 @@ export default function BarangPage() {
                 />
               </InputGroup>
             </Col>
-            <Col md={2}>
+            <Col md={3} className="mb-2 mb-md-0">
               <Form.Select
                 value={filterKategori}
                 onChange={(e) => setFilterKategori(e.target.value)}
@@ -312,11 +345,12 @@ export default function BarangPage() {
                 ))}
               </Form.Select>
             </Col>
-            <Col md={2}>
-              <div className="d-flex gap-2">
+            <Col md={4}>
+              <div className="d-flex gap-2 justify-content-md-end">
                 <Button
                   size="sm"
                   variant={filter === "all" ? "primary" : "outline-primary"}
+                  className="rounded-pill px-3"
                   onClick={() => setFilter("all")}
                 >
                   Semua
@@ -324,6 +358,7 @@ export default function BarangPage() {
                 <Button
                   size="sm"
                   variant={filter === "low" ? "warning" : "outline-warning"}
+                  className="rounded-pill px-3"
                   onClick={() => setFilter("low")}
                 >
                   Rendah
@@ -331,6 +366,7 @@ export default function BarangPage() {
                 <Button
                   size="sm"
                   variant={filter === "out" ? "danger" : "outline-danger"}
+                  className="rounded-pill px-3"
                   onClick={() => setFilter("out")}
                 >
                   Habis
@@ -343,42 +379,34 @@ export default function BarangPage() {
 
       {/* Stats Summary */}
       <Row className="mb-4">
-        <Col md={3}>
-          <Card className="border-0 bg-primary text-white">
-            <Card.Body>
-              <h6>Total Barang</h6>
-              <h2>{barang.length}</h2>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col md={3}>
-          <Card className="border-0 bg-success text-white">
-            <Card.Body>
-              <h6>Total Stok</h6>
-              <h2>{barang.reduce((sum, item) => sum + item.stok, 0)}</h2>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col md={3}>
-          <Card className="border-0 bg-warning text-white">
-            <Card.Body>
-              <h6>Stok Rendah</h6>
-              <h2>{barang.filter((item) => item.stok < 10).length}</h2>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col md={3}>
-          <Card className="border-0 bg-danger text-white">
-            <Card.Body>
-              <h6>Stok Habis</h6>
-              <h2>{barang.filter((item) => item.stok === 0).length}</h2>
-            </Card.Body>
-          </Card>
-        </Col>
+        <StatCard
+          label="Total Barang"
+          value={barang.length}
+          icon={<FaBox size={18} />}
+          colorHex="#3b82f6"
+        />
+        <StatCard
+          label="Total Stok"
+          value={barang.reduce((sum, item) => sum + item.stok, 0)}
+          icon={<FaBox size={18} />}
+          colorHex="#10b981"
+        />
+        <StatCard
+          label="Stok Rendah"
+          value={barang.filter((item) => item.stok > 0 && item.stok < 10).length}
+          icon={<FaArrowDown size={18} />}
+          colorHex="#f59e0b"
+        />
+        <StatCard
+          label="Stok Habis"
+          value={barang.filter((item) => item.stok === 0).length}
+          icon={<FaBox size={18} />}
+          colorHex="#ef4444"
+        />
       </Row>
 
       {/* Table */}
-      <Card className="border-0 shadow">
+      <Card className="border-0 shadow-sm" style={{ borderRadius: "16px" }}>
         <Card.Body>
           {loading ? (
             <div className="text-center py-5">
@@ -408,7 +436,7 @@ export default function BarangPage() {
                 </tr>
               </thead>
               <tbody>
-                {filteredBarang.map((item) => (
+                {paginatedBarang.map((item) => (
                   <tr key={item.id}>
                     <td>
                       <Badge bg="secondary">{item.kode_barang}</Badge>
@@ -424,7 +452,7 @@ export default function BarangPage() {
                     </td>
                     <td>
                       {item.kategori ? (
-                        <Badge bg="info">{item.kategori.nama_kategori}</Badge>
+                        <Badge bg="info" pill className="px-3 py-2 fw-normal">{item.kategori.nama_kategori}</Badge>
                       ) : (
                         <small className="text-muted">-</small>
                       )}
@@ -433,7 +461,8 @@ export default function BarangPage() {
                       <div className="d-flex align-items-center">
                         <Badge
                           bg={getStockColor(item.stok)}
-                          className="me-2"
+                          pill
+                          className="me-2 px-3 py-2 fw-normal"
                           style={{ minWidth: "60px" }}
                         >
                           {item.stok} unit
@@ -513,11 +542,38 @@ export default function BarangPage() {
             </Table>
           )}
 
-          {barang.length > 0 && (
-            <div className="mt-3 text-muted">
-              Menampilkan {filteredBarang.length} dari {barang.length} barang
+          <div className="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+            <div className="text-muted small">
+              Menampilkan {(currentPage - 1) * itemsPerPage + 1} - {Math.min(currentPage * itemsPerPage, filteredBarang.length)} dari {filteredBarang.length} barang
             </div>
-          )}
+            {totalPages > 1 && (
+              <div className="d-flex gap-2">
+                <Button
+                  variant="outline-secondary"
+                  size="sm"
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                  className="rounded-pill px-3"
+                  title="Sebelumnya"
+                >
+                  <FaChevronLeft size={12} />
+                </Button>
+                <div className="d-flex align-items-center px-2 small fw-bold">
+                  {currentPage} / {totalPages}
+                </div>
+                <Button
+                  variant="outline-secondary"
+                  size="sm"
+                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  disabled={currentPage === totalPages}
+                  className="rounded-pill px-3"
+                  title="Selanjutnya"
+                >
+                  <FaChevronRight size={12} />
+                </Button>
+              </div>
+            )}
+          </div>
         </Card.Body>
       </Card>
 

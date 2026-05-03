@@ -464,11 +464,19 @@ class TransaksiService implements TransactionServiceInterface
     /**
      * Mutasi stok terbaru (transaksi approved).
      */
-    public function getRecentMutations(int $limit = 10): array
+    public function getRecentMutations(int $limit = 10, ?string $startDate = null, ?string $endDate = null): array
     {
-        return Transaksi::with(['barang:id,kode_barang,nama', 'approvedByUser:id,name'])
-            ->where('status', 'diterima')
-            ->latest('approved_at')
+        $query = Transaksi::with(['barang:id,kode_barang,nama', 'approvedByUser:id,name'])
+            ->where('status', 'diterima');
+
+        if ($startDate) {
+            $query->whereDate('approved_at', '>=', $startDate);
+        }
+        if ($endDate) {
+            $query->whereDate('approved_at', '<=', $endDate);
+        }
+
+        return $query->latest('approved_at')
             ->limit($limit)
             ->get()
             ->map(fn($t) => [

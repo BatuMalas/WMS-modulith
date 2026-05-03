@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Card, Table, Button, InputGroup, Form, Badge, Spinner, Modal } from "react-bootstrap";
-import { FaSearch, FaCheck, FaTimes, FaInfoCircle, FaTrash, FaDownload, FaFilePdf } from "react-icons/fa";
+import { FaSearch, FaCheck, FaTimes, FaInfoCircle, FaTrash, FaDownload, FaFilePdf, FaExclamationCircle } from "react-icons/fa";
 import { toast } from "react-toastify";
 import TransaksiService from "../../services/transaksiService";
 
@@ -12,6 +12,9 @@ export default function BarangKeluarPage() {
   const [selected, setSelected] = useState(null);
   const [showInvoiceModal, setShowInvoiceModal] = useState(false);
   const [approvedItem, setApprovedItem] = useState(null);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmAction, setConfirmAction] = useState(null);
+  const [confirmId, setConfirmId] = useState(null);
 
   useEffect(() => { fetchData(); }, []);
 
@@ -29,34 +32,45 @@ export default function BarangKeluarPage() {
     t.kode_transaksi.toLowerCase().includes(search.toLowerCase())
   );
 
-  const handleApprove = async (id) => {
-    if (!window.confirm("Setujui transaksi ini? Stok akan dikurangi dan invoice PDF akan otomatis digenerate.")) return;
-    try {
-      const res = await TransaksiService.approve(id);
-      toast.success("Transaksi disetujui! Invoice PDF sudah digenerate.");
-      const approved = res.data.data;
-      setApprovedItem(approved);
-      setShowInvoiceModal(true);
-      fetchData();
-    } catch (err) { toast.error(err.response?.data?.message || "Gagal menyetujui"); }
+  const handleApprove = (id) => {
+    setConfirmAction("approve");
+    setConfirmId(id);
+    setShowConfirmModal(true);
   };
 
-  const handleReject = async (id) => {
-    if (!window.confirm("Tolak transaksi ini?")) return;
-    try {
-      await TransaksiService.reject(id);
-      toast.success("Transaksi ditolak");
-      fetchData();
-    } catch (err) { toast.error(err.response?.data?.message || "Gagal menolak"); }
+  const handleReject = (id) => {
+    setConfirmAction("reject");
+    setConfirmId(id);
+    setShowConfirmModal(true);
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Hapus transaksi ini? Data yang sudah dihapus tidak bisa dikembalikan.")) return;
+  const handleDelete = (id) => {
+    setConfirmAction("delete");
+    setConfirmId(id);
+    setShowConfirmModal(true);
+  };
+
+  const executeConfirmAction = async () => {
+    setShowConfirmModal(false);
+    const id = confirmId;
     try {
-      await TransaksiService.delete(id);
-      toast.success("Transaksi berhasil dihapus");
+      if (confirmAction === "approve") {
+        const res = await TransaksiService.approve(id);
+        toast.success("Transaksi disetujui! Invoice PDF sudah digenerate.");
+        const approved = res.data.data;
+        setApprovedItem(approved);
+        setShowInvoiceModal(true);
+      } else if (confirmAction === "reject") {
+        await TransaksiService.reject(id);
+        toast.success("Transaksi ditolak");
+      } else if (confirmAction === "delete") {
+        await TransaksiService.delete(id);
+        toast.success("Transaksi berhasil dihapus");
+      }
       fetchData();
-    } catch (err) { toast.error(err.response?.data?.message || "Gagal menghapus"); }
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Operasi gagal");
+    }
   };
 
   const handleDownloadInvoice = async (id) => {
@@ -84,7 +98,7 @@ export default function BarangKeluarPage() {
 
   const statusBadge = (status) => {
     const map = { pending: "warning", diterima: "success", ditolak: "danger" };
-    return <Badge bg={map[status] || "secondary"}>{status?.charAt(0).toUpperCase() + status?.slice(1)}</Badge>;
+    return <Badge bg={map[status] || "secondary"} pill className="px-3 py-2 fw-normal">{status?.charAt(0).toUpperCase() + status?.slice(1)}</Badge>;
   };
 
   if (loading) return <div className="text-center p-5"><Spinner animation="border" /></div>;
@@ -92,7 +106,7 @@ export default function BarangKeluarPage() {
   return (
     <>
       <h3 className="mb-4">📤 Data Barang Keluar</h3>
-      <Card className="shadow-sm border-0">
+      <Card className="shadow-sm border-0" style={{ borderRadius: "16px" }}>
         <Card.Body>
           <div className="d-flex justify-content-end mb-3">
             <InputGroup style={{ maxWidth: 300 }}>
@@ -100,7 +114,7 @@ export default function BarangKeluarPage() {
               <Form.Control placeholder="Cari Data..." value={search} onChange={(e) => setSearch(e.target.value)} />
             </InputGroup>
           </div>
-          <Table striped bordered hover responsive>
+          <Table hover responsive className="border-top">
             <thead className="table-dark">
               <tr>
                 <th>#</th><th>Tanggal Keluar</th><th>Invoice</th><th>Kode Barang</th>
@@ -118,7 +132,7 @@ export default function BarangKeluarPage() {
                       <small className="font-monospace">{t.invoice_number}</small>
                     ) : "-"}
                   </td>
-                  <td><Badge bg="secondary">{t.barang?.kode_barang}</Badge></td>
+                  <td><Badge bg="secondary" pill className="px-3 py-2 fw-normal">{t.barang?.kode_barang}</Badge></td>
                   <td>{t.barang?.nama}</td>
                   <td>{t.jumlah} {t.barang?.satuan || ""}</td>
                   <td>Rp {Number(t.harga_satuan || 0).toLocaleString("id-ID")}</td>
@@ -211,6 +225,35 @@ export default function BarangKeluarPage() {
             Tutup
           </Button>
         </Modal.Footer>
+      </Modal>
+
+      {/* Confirmation Modal */}
+      <Modal show={showConfirmModal} onHide={() => setShowConfirmModal(false)} centered size="sm">
+        <Modal.Body className="p-4 text-center">
+          <FaExclamationCircle size={48} className={`mb-3 ${confirmAction === 'delete' ? 'text-danger' : 'text-warning'}`} />
+          <h5 className="mb-3 fw-bold">Konfirmasi</h5>
+          <p className="text-muted mb-4">
+            {confirmAction === 'approve' && "Setujui transaksi ini? Stok akan dikurangi dan invoice PDF akan otomatis digenerate."}
+            {confirmAction === 'reject' && "Apakah Anda yakin ingin menolak transaksi ini?"}
+            {confirmAction === 'delete' && "Hapus transaksi ini? Data yang sudah dihapus tidak bisa dikembalikan."}
+          </p>
+          <div className="d-flex gap-2">
+            <Button 
+              variant={confirmAction === 'delete' || confirmAction === 'reject' ? "danger" : "primary"}
+              className="w-50 rounded-pill" 
+              onClick={executeConfirmAction}
+            >
+              Ya, Lanjutkan
+            </Button>
+            <Button 
+              variant="outline-secondary" 
+              className="w-50 rounded-pill" 
+              onClick={() => setShowConfirmModal(false)}
+            >
+              Batal
+            </Button>
+          </div>
+        </Modal.Body>
       </Modal>
     </>
   );

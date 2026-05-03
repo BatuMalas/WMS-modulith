@@ -68,16 +68,16 @@ export default function KategoriPage() {
   return (
     <>
       <h3 className="mb-4">🏷️ Kategori Barang</h3>
-      <Card className="shadow-sm border-0">
+      <Card className="shadow-sm border-0" style={{ borderRadius: "16px" }}>
         <Card.Body>
           <div className="d-flex justify-content-between mb-3">
-            <Button variant="primary" onClick={openAdd}><FaPlus className="me-2" />Tambah Kategori</Button>
+            <Button variant="primary" className="rounded-pill px-4 shadow-sm" onClick={openAdd}><FaPlus className="me-2" />Tambah Kategori</Button>
             <InputGroup style={{ maxWidth: 300 }}>
               <InputGroup.Text><FaSearch /></InputGroup.Text>
               <Form.Control placeholder="Cari Kategori..." value={search} onChange={(e) => setSearch(e.target.value)} />
             </InputGroup>
           </div>
-          <Table striped bordered hover responsive>
+          <Table hover responsive className="border-top">
             <thead className="table-dark">
               <tr><th>#</th><th>Kode Kategori</th><th>Nama Kategori</th><th>Aksi</th></tr>
             </thead>
@@ -85,7 +85,7 @@ export default function KategoriPage() {
               {filtered.map((k, i) => (
                 <tr key={k.id}>
                   <td>{i + 1}</td>
-                  <td><Badge bg="info">{k.kode_kategori}</Badge></td>
+                  <td><Badge bg="info" pill className="px-3 py-2 fw-normal">{k.kode_kategori}</Badge></td>
                   <td>{k.nama_kategori}</td>
                   <td>
                     <Button size="sm" variant="outline-primary" className="me-1" onClick={() => openEdit(k)}><FaEdit /></Button>

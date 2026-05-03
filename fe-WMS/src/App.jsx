@@ -86,11 +86,11 @@ function RoleRoute({ roles, children }) {
 // Main layout with navbar + sidebar
 function AppLayout() {
   return (
-    <div className="app" style={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
+    <div className="app" style={{ minHeight: "100vh" }}>
       <Navbar />
       <div className="d-flex">
         <Sidebar />
-        <Container fluid className="p-4" style={{ marginLeft: "250px", marginTop: "56px" }}>
+        <Container fluid className="p-4" style={{ marginLeft: "250px" }}>
           <Routes>
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="/dashboard" element={<Dashboard />} />

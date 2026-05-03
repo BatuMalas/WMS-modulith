@@ -109,12 +109,12 @@ export default function UserManagementPage() {
         <Container fluid className="py-4">
             <div className="d-flex justify-content-between align-items-center mb-4">
                 <h1 className="fw-bold"><FaUsers className="me-2" />Data Pengguna</h1>
-                <Button variant="primary" onClick={openCreate}>
+                <Button variant="primary" className="rounded-pill px-4 shadow-sm" onClick={openCreate}>
                     <FaPlus className="me-2" />Tambah User
                 </Button>
             </div>
 
-            <Card className="border-0 shadow">
+            <Card className="border-0 shadow-sm" style={{ borderRadius: "16px" }}>
                 <Card.Body>
                     <Table responsive hover>
                         <thead className="table-dark">
@@ -128,7 +128,7 @@ export default function UserManagementPage() {
                                 <tr key={user.id}>
                                     <td>{idx + 1}</td>
                                     <td>
-                                        <Badge bg={user.role === "admin" ? "danger" : user.role === "manajer" ? "warning" : "primary"}>
+                                        <Badge pill className="px-3 py-2 fw-normal" bg={user.role === "admin" ? "danger" : user.role === "manajer" ? "warning" : "primary"}>
                                             {user.role}
                                         </Badge>
                                     </td>

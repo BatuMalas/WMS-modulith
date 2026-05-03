@@ -70,16 +70,16 @@ export default function GudangPage() {
       <h3 className="mb-4"><FaWarehouse className="me-2" />Manajemen Gudang</h3>
       <p className="text-muted mb-4">Kelola gudang dan rak penyimpanan. Format kode: G1-R1 (Gudang 1 Rak 1)</p>
 
-      <Card className="shadow-sm border-0">
+      <Card className="shadow-sm border-0" style={{ borderRadius: "16px" }}>
         <Card.Body>
           <div className="d-flex justify-content-between mb-3">
-            <Button variant="primary" onClick={openAdd}><FaPlus className="me-2" />Tambah Gudang</Button>
+            <Button variant="primary" className="rounded-pill px-4 shadow-sm" onClick={openAdd}><FaPlus className="me-2" />Tambah Gudang</Button>
             <InputGroup style={{ maxWidth: 300 }}>
               <InputGroup.Text><FaSearch /></InputGroup.Text>
               <Form.Control placeholder="Cari Gudang..." value={search} onChange={(e) => setSearch(e.target.value)} />
             </InputGroup>
           </div>
-          <Table striped bordered hover responsive>
+          <Table hover responsive className="border-top">
             <thead className="table-dark">
               <tr><th>#</th><th>Kode Gudang</th><th>Nama Gudang</th><th>Total Stok</th><th>Deskripsi</th><th>Aksi</th></tr>
             </thead>
@@ -87,10 +87,10 @@ export default function GudangPage() {
               {filtered.map((g, i) => (
                 <tr key={g.id}>
                   <td>{i + 1}</td>
-                  <td><Badge bg="warning" text="dark">{g.kode_gudang}</Badge></td>
+                  <td><Badge bg="warning" text="dark" pill className="px-3 py-2 fw-normal">{g.kode_gudang}</Badge></td>
                   <td><strong>{g.nama_gudang}</strong></td>
                   <td>
-                    <Badge bg={g.total_stok > 0 ? "success" : "secondary"}>
+                    <Badge bg={g.total_stok > 0 ? "success" : "secondary"} pill className="px-3 py-2 fw-normal">
                       {g.total_stok || 0} unit
                     </Badge>
                   </td>

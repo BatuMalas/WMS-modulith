@@ -72,16 +72,16 @@ export default function CustomerPage() {
   return (
     <>
       <h3 className="mb-4">📋 Data Customer</h3>
-      <Card className="shadow-sm border-0">
+      <Card className="shadow-sm border-0" style={{ borderRadius: "16px" }}>
         <Card.Body>
           <div className="d-flex justify-content-between mb-3">
-            <Button variant="primary" onClick={openAdd}><FaPlus className="me-2" />Tambah Customer</Button>
+            <Button variant="primary" className="rounded-pill px-4 shadow-sm" onClick={openAdd}><FaPlus className="me-2" />Tambah Customer</Button>
             <InputGroup style={{ maxWidth: 300 }}>
               <InputGroup.Text><FaSearch /></InputGroup.Text>
               <Form.Control placeholder="Cari Customer..." value={search} onChange={(e) => setSearch(e.target.value)} />
             </InputGroup>
           </div>
-          <Table striped bordered hover responsive>
+          <Table hover responsive className="border-top">
             <thead className="table-dark">
               <tr>
                 <th>No</th><th>Kode Customer</th><th>Nama</th><th>No Telp./WA</th><th>Email</th><th>Alamat</th><th>Aksi</th>
@@ -91,7 +91,7 @@ export default function CustomerPage() {
               {filtered.map((c, i) => (
                 <tr key={c.id}>
                   <td>{i + 1}</td>
-                  <td><Badge bg="info">{c.kode_customer}</Badge></td>
+                  <td><Badge bg="info" pill className="px-3 py-2 fw-normal">{c.kode_customer}</Badge></td>
                   <td>{c.nama}</td>
                   <td>{c.telepon || "-"}</td>
                   <td>{c.email || "-"}</td>

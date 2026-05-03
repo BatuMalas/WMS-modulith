@@ -21,8 +21,10 @@ class DashboardController extends Controller
         protected CustomerServiceInterface $customerService
     ) {}
 
-    public function index()
+    public function index(\Illuminate\Http\Request $request)
     {
+        $startDate = $request->query('start_date');
+        $endDate = $request->query('end_date');
         $inventorySummary = $this->inventoryService->getSummary();
         $supplierSummary = $this->supplierService->getSummary();
         $transactionSummary = $this->transactionService->getSummary();
@@ -55,10 +57,12 @@ class DashboardController extends Controller
             'top_suppliers' => $this->supplierService->getTopSuppliers(5),
 
             // ─── New: Stock Mutations ───
-            'recent_mutations' => $this->transactionService->getRecentMutations(10),
+            'recent_mutations' => $this->transactionService->getRecentMutations(10, $startDate, $endDate),
 
             // ─── New: Activity Log ───
             'recent_activities' => ActivityLog::with('user:id,name,role')
+                ->when($startDate, fn($q) => $q->whereDate('created_at', '>=', $startDate))
+                ->when($endDate, fn($q) => $q->whereDate('created_at', '<=', $endDate))
                 ->latest()
                 ->limit(10)
                 ->get()

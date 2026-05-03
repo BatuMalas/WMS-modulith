@@ -78,7 +78,7 @@ export default function BarangMasukForm() {
 
   const statusBadge = (s) => {
     const map = { pending: "warning", diterima: "success", ditolak: "danger" };
-    return <Badge bg={map[s] || "secondary"}>{s?.charAt(0).toUpperCase() + s?.slice(1)}</Badge>;
+    return <Badge bg={map[s] || "secondary"} pill className="px-3 py-2 fw-normal">{s?.charAt(0).toUpperCase() + s?.slice(1)}</Badge>;
   };
 
   if (loading) return <div className="text-center p-5"><Spinner animation="border" /></div>;
@@ -88,7 +88,7 @@ export default function BarangMasukForm() {
       <h3 className="mb-4"><FaArrowDown className="me-2 text-success" />Form Barang Masuk</h3>
       <Alert variant="info">Data yang diinput akan berstatus <strong>Pending</strong> dan perlu disetujui oleh Manajer.</Alert>
 
-      <Card className="shadow-sm border-0 mb-4">
+      <Card className="shadow-sm border-0 mb-4" style={{ borderRadius: "16px" }}>
         <Card.Body>
           <Form onSubmit={handleSubmit}>
             <Row>
@@ -137,7 +137,7 @@ export default function BarangMasukForm() {
             </Row>
             <Form.Group className="mb-3"><Form.Label>Keterangan</Form.Label>
               <Form.Control as="textarea" rows={2} value={form.keterangan} onChange={e => setForm({ ...form, keterangan: e.target.value })} /></Form.Group>
-            <Button type="submit" variant="success" disabled={submitting}>
+            <Button type="submit" variant="success" disabled={submitting} className="rounded-pill px-4 shadow-sm">
               {submitting ? <Spinner size="sm" className="me-2" /> : <FaSave className="me-2" />}
               Simpan Barang Masuk
             </Button>
@@ -145,10 +145,10 @@ export default function BarangMasukForm() {
         </Card.Body>
       </Card>
 
-      <Card className="shadow-sm border-0">
+      <Card className="shadow-sm border-0" style={{ borderRadius: "16px" }}>
         <Card.Header className="bg-white"><strong>📋 Riwayat Terakhir</strong></Card.Header>
         <Card.Body>
-          <Table striped bordered hover responsive size="sm">
+          <Table hover responsive size="sm" className="border-top">
             <thead><tr><th>Kode</th><th>Tanggal</th><th>Barang</th><th>Jumlah</th><th>Supplier</th><th>Status</th></tr></thead>
             <tbody>
               {recentData.map(t => (

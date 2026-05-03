@@ -45,9 +45,9 @@ export default function Sidebar() {
   }
 
   return (
-    <div className="sidebar bg-white shadow position-fixed"
+      <div className="sidebar bg-white position-fixed border-end"
       style={{
-        width: "250px", height: "calc(100vh - 56px)", left: 0, top: "56px",
+        width: "250px", height: "calc(100vh - 64px)", left: 0, top: "64px",
         overflowY: "auto", zIndex: 1000
       }}>
       <div className="p-3">
@@ -56,15 +56,15 @@ export default function Sidebar() {
           {menuItems.map((item) => {
             const isActive = location.pathname === item.path;
             return (
-              <Nav.Item key={item.path} className="mb-2">
+              <Nav.Item key={item.path} className="mb-1">
                 <Link to={item.path}
-                  className={`d-flex align-items-center py-3 px-3 text-decoration-none rounded ${isActive ? `bg-${item.color} text-white` : "text-dark hover-bg-light"
+                  className={`d-flex align-items-center py-2 px-3 text-decoration-none ${isActive ? `bg-info text-white rounded-pill shadow-sm` : "text-muted hover-bg-light rounded"
                     }`}
-                  style={{ transition: "all 0.2s" }}>
-                  <span className={`me-3 ${isActive ? "text-white" : `text-${item.color}`}`}>
+                  style={{ transition: "all 0.2s", fontWeight: isActive ? 600 : 500 }}>
+                  <span className={`me-3 ${isActive ? "text-white" : `text-muted`}`} style={{ fontSize: "1.1rem" }}>
                     {item.icon}
                   </span>
-                  <span className="fw-medium">{item.label}</span>
+                  <span style={{ fontSize: "0.95rem" }}>{item.label}</span>
                 </Link>
               </Nav.Item>
             );

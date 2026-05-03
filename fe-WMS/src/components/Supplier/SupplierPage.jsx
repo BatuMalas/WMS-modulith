@@ -75,16 +75,16 @@ export default function SupplierPage() {
   return (
     <>
       <h3 className="mb-4">🚛 Data Supplier</h3>
-      <Card className="shadow-sm border-0">
+      <Card className="shadow-sm border-0" style={{ borderRadius: "16px" }}>
         <Card.Body>
           <div className="d-flex justify-content-between mb-3">
-            {isAdmin() && <Button variant="primary" onClick={openAdd}><FaPlus className="me-2" />Tambah Supplier</Button>}
+            {isAdmin() && <Button variant="primary" className="rounded-pill px-4 shadow-sm" onClick={openAdd}><FaPlus className="me-2" />Tambah Supplier</Button>}
             <InputGroup style={{ maxWidth: 300 }}>
               <InputGroup.Text><FaSearch /></InputGroup.Text>
               <Form.Control placeholder="Cari Supplier..." value={search} onChange={(e) => setSearch(e.target.value)} />
             </InputGroup>
           </div>
-          <Table striped bordered hover responsive>
+          <Table hover responsive className="border-top">
             <thead className="table-dark">
               <tr>
                 <th>No</th><th>Kode</th><th>Nama Supplier</th><th>Nama Kontak</th>
@@ -95,7 +95,7 @@ export default function SupplierPage() {
               {filtered.map((s, i) => (
                 <tr key={s.id}>
                   <td>{i + 1}</td>
-                  <td><Badge bg="info">{s.kode_supplier}</Badge></td>
+                  <td><Badge bg="info" pill className="px-3 py-2 fw-normal">{s.kode_supplier}</Badge></td>
                   <td>{s.nama_supplier}</td>
                   <td>{s.nama_kontak || "-"}</td>
                   <td>{s.telepon || "-"}</td>

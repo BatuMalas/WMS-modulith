@@ -15,8 +15,8 @@ import {
 } from "recharts";
 
 const COLORS = [
-  "#6366f1", "#06b6d4", "#10b981", "#f59e0b", "#ef4444",
-  "#8b5cf6", "#ec4899", "#14b8a6", "#f97316", "#64748b",
+  "#3b82f6", "#14b8a6", "#64748b", "#cbd5e1", "#8b5cf6",
+  "#06b6d4", "#0ea5e9", "#f43f5e", "#f59e0b", "#10b981",
 ];
 
 /**
@@ -26,9 +26,9 @@ const COLORS = [
 export function InventoryFlowChart({ data = [] }) {
   if (!data.length) {
     return (
-      <Card className="border-0 shadow-sm h-100">
-        <Card.Header className="bg-white border-bottom-0 pt-4 px-4">
-          <h6 className="fw-bold mb-0">📈 Arus Barang (6 Bulan Terakhir)</h6>
+      <Card className="shadow-sm h-100 border-0" style={{ borderRadius: "16px" }}>
+        <Card.Header className="bg-white border-bottom-0 pt-4 px-4" style={{ borderRadius: "16px 16px 0 0" }}>
+          <h5 className="fw-bold text-dark mb-0">Arus Barang (6 Bulan Terakhir)</h5>
         </Card.Header>
         <Card.Body className="d-flex align-items-center justify-content-center text-muted" style={{ minHeight: 300 }}>
           Belum ada data transaksi
@@ -38,10 +38,9 @@ export function InventoryFlowChart({ data = [] }) {
   }
 
   return (
-    <Card className="border-0 shadow-sm h-100">
-      <Card.Header className="bg-white border-bottom-0 pt-4 px-4">
-        <h6 className="fw-bold mb-0">📈 Arus Barang (6 Bulan Terakhir)</h6>
-        <small className="text-muted">Perbandingan barang masuk & keluar per bulan</small>
+    <Card className="shadow-sm h-100 border-0" style={{ borderRadius: "16px" }}>
+      <Card.Header className="bg-white border-bottom-0 pt-4 px-4" style={{ borderRadius: "16px 16px 0 0" }}>
+        <h5 className="fw-bold text-dark mb-0">Arus Barang (6 Bulan Terakhir)</h5>
       </Card.Header>
       <Card.Body>
         <ResponsiveContainer width="100%" height={300}>
@@ -56,9 +55,9 @@ export function InventoryFlowChart({ data = [] }) {
                 boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
               }}
             />
-            <Legend />
-            <Bar dataKey="masuk" fill="#6366f1" name="Barang Masuk" radius={[4, 4, 0, 0]} />
-            <Bar dataKey="keluar" fill="#f59e0b" name="Barang Keluar" radius={[4, 4, 0, 0]} />
+            <Legend wrapperStyle={{ color: "#64748b" }} />
+            <Bar dataKey="keluar" fill="#3b82f6" name="Barang Keluar" />
+            <Bar dataKey="masuk" fill="#14b8a6" name="Barang Masuk" />
           </BarChart>
         </ResponsiveContainer>
       </Card.Body>
@@ -73,9 +72,9 @@ export function InventoryFlowChart({ data = [] }) {
 export function StockDistributionChart({ data = [] }) {
   if (!data.length) {
     return (
-      <Card className="border-0 shadow-sm h-100">
-        <Card.Header className="bg-white border-bottom-0 pt-4 px-4">
-          <h6 className="fw-bold mb-0">🥧 Distribusi Stok per Kategori</h6>
+      <Card className="shadow-sm h-100 border-0" style={{ borderRadius: "16px" }}>
+        <Card.Header className="bg-white border-bottom-0 pt-4 px-4" style={{ borderRadius: "16px 16px 0 0" }}>
+          <h5 className="fw-bold text-dark mb-0">Distribusi Stok per Kategori</h5>
         </Card.Header>
         <Card.Body className="d-flex align-items-center justify-content-center text-muted" style={{ minHeight: 300 }}>
           Belum ada data kategori
@@ -90,10 +89,9 @@ export function StockDistributionChart({ data = [] }) {
   };
 
   return (
-    <Card className="border-0 shadow-sm h-100">
-      <Card.Header className="bg-white border-bottom-0 pt-4 px-4">
-        <h6 className="fw-bold mb-0">🥧 Distribusi Stok per Kategori</h6>
-        <small className="text-muted">Proporsi stok berdasarkan kategori barang</small>
+    <Card className="shadow-sm h-100 border-0" style={{ borderRadius: "16px" }}>
+      <Card.Header className="bg-white border-bottom-0 pt-4 px-4" style={{ borderRadius: "16px 16px 0 0" }}>
+        <h5 className="fw-bold text-dark mb-0">Distribusi Stok per Kategori</h5>
       </Card.Header>
       <Card.Body>
         <ResponsiveContainer width="100%" height={300}>
@@ -135,9 +133,9 @@ export function StockDistributionChart({ data = [] }) {
 export function TopProductsChart({ data = [] }) {
   if (!data.length) {
     return (
-      <Card className="border-0 shadow-sm h-100">
-        <Card.Header className="bg-white border-bottom-0 pt-4 px-4">
-          <h6 className="fw-bold mb-0">🏆 Barang Paling Laris (Outbound)</h6>
+      <Card className="shadow-sm h-100 border-0" style={{ borderRadius: "16px" }}>
+        <Card.Header className="bg-white border-bottom-0 pt-4 px-4" style={{ borderRadius: "16px 16px 0 0" }}>
+          <h5 className="fw-bold text-dark mb-0">Barang Paling Laris (Outbound)</h5>
         </Card.Header>
         <Card.Body className="d-flex align-items-center justify-content-center text-muted" style={{ minHeight: 300 }}>
           Belum ada data transaksi keluar
@@ -147,10 +145,9 @@ export function TopProductsChart({ data = [] }) {
   }
 
   return (
-    <Card className="border-0 shadow-sm h-100">
-      <Card.Header className="bg-white border-bottom-0 pt-4 px-4">
-        <h6 className="fw-bold mb-0">🏆 Barang Paling Laris (Outbound)</h6>
-        <small className="text-muted">Produk dengan volume keluar terbanyak</small>
+    <Card className="shadow-sm h-100 border-0" style={{ borderRadius: "16px" }}>
+      <Card.Header className="bg-white border-bottom-0 pt-4 px-4" style={{ borderRadius: "16px 16px 0 0" }}>
+        <h5 className="fw-bold text-dark mb-0">Barang Paling Laris (Outbound)</h5>
       </Card.Header>
       <Card.Body>
         <ResponsiveContainer width="100%" height={300}>
@@ -170,7 +167,7 @@ export function TopProductsChart({ data = [] }) {
                 boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
               }}
             />
-            <Bar dataKey="total_keluar" fill="#ef4444" name="Total Keluar" radius={[0, 4, 4, 0]} />
+            <Bar dataKey="total_keluar" fill="#3b82f6" name="Total Keluar" />
           </BarChart>
         </ResponsiveContainer>
       </Card.Body>

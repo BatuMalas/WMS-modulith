@@ -45,7 +45,7 @@ export default function StokBarangPage() {
   return (
     <>
       <h3 className="mb-4">📦 Data Barang</h3>
-      <Card className="shadow-sm border-0">
+      <Card className="shadow-sm border-0" style={{ borderRadius: "16px" }}>
         <Card.Body>
           <div className="d-flex justify-content-between align-items-center mb-3">
             <span className="text-muted">Total: {filtered.length} barang</span>
@@ -55,7 +55,7 @@ export default function StokBarangPage() {
             </InputGroup>
           </div>
           <div style={{ overflowX: "auto" }}>
-            <Table striped bordered hover responsive>
+            <Table hover responsive className="border-top">
               <thead className="table-dark">
                 <tr>
                   <th>#</th>
@@ -76,7 +76,7 @@ export default function StokBarangPage() {
                 {filtered.map((d, i) => (
                   <tr key={d.id}>
                     <td>{i + 1}</td>
-                    <td><Badge bg="secondary">{d.kode_barang}</Badge></td>
+                    <td><Badge bg="secondary" pill className="px-3 py-2 fw-normal">{d.kode_barang}</Badge></td>
                     <td>{d.nama}</td>
                     <td>{d.satuan || "-"}</td>
                     <td>{d.kategori?.nama || "-"}</td>
@@ -86,7 +86,7 @@ export default function StokBarangPage() {
                     <td>{formatDate(d.kadaluarsa)}</td>
                     <td>
                       {d.stok_min != null ? (
-                        <Badge bg={d.stok <= d.stok_min ? "danger" : "success"}>
+                        <Badge bg={d.stok <= d.stok_min ? "danger" : "success"} pill className="px-3 py-2 fw-normal">
                           {d.stok_min}
                         </Badge>
                       ) : "-"}

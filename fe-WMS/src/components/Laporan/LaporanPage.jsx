@@ -50,13 +50,13 @@ export default function LaporanPage() {
 
       <Row className="mb-4">
         <Col lg={4} className="mb-3">
-          <Card className="border-0 shadow-sm h-100">
+          <Card className="border-0 shadow-sm h-100" style={{ borderRadius: "16px" }}>
             <Card.Body className="text-center">
               <h5>📊 Laporan Stok</h5>
               <p>Laporan kondisi stok barang</p>
               <Button
                 variant="outline-primary"
-                className="w-100"
+                className="w-100 rounded-pill"
                 onClick={handleExportExcel}
               >
                 <FaFileExcel className="me-2" /> Export Excel
@@ -66,13 +66,13 @@ export default function LaporanPage() {
         </Col>
 
         <Col lg={4} className="mb-3">
-          <Card className="border-0 shadow-sm h-100">
+          <Card className="border-0 shadow-sm h-100" style={{ borderRadius: "16px" }}>
             <Card.Body className="text-center">
               <h5>📈 Laporan Transaksi</h5>
               <p>Laporan transaksi harian/bulanan</p>
               <Button
                 variant="outline-success"
-                className="w-100"
+                className="w-100 rounded-pill"
                 onClick={handleExportPDF}
               >
                 <FaFilePdf className="me-2" /> Export PDF
@@ -82,11 +82,11 @@ export default function LaporanPage() {
         </Col>
 
         <Col lg={4} className="mb-3">
-          <Card className="border-0 shadow-sm h-100">
+          <Card className="border-0 shadow-sm h-100" style={{ borderRadius: "16px" }}>
             <Card.Body className="text-center">
               <h5>📋 Laporan Supplier</h5>
               <p>Laporan performa supplier</p>
-              <Button variant="outline-warning" className="w-100">
+              <Button variant="outline-warning" className="w-100 rounded-pill">
                 <FaPrint className="me-2" /> Cetak Laporan
               </Button>
             </Card.Body>
@@ -94,9 +94,9 @@ export default function LaporanPage() {
         </Col>
       </Row>
 
-      <Card className="border-0 shadow">
-        <Card.Header className="bg-primary text-white">
-          <h5 className="mb-0">Generate Custom Report</h5>
+      <Card className="border-0 shadow-sm" style={{ borderRadius: "16px" }}>
+        <Card.Header className="bg-white border-0 pt-4 pb-0">
+          <h5 className="mb-0 fw-bold">Generate Custom Report</h5>
         </Card.Header>
         <Card.Body>
           <Form>
@@ -125,10 +125,10 @@ export default function LaporanPage() {
               </Col>
             </Row>
             <div className="text-center">
-              <Button variant="primary" className="me-2">
+              <Button variant="primary" className="me-2 rounded-pill px-4 shadow-sm">
                 Generate Report
               </Button>
-              <Button variant="secondary">Reset</Button>
+              <Button variant="secondary" className="rounded-pill px-4">Reset</Button>
             </div>
           </Form>
         </Card.Body>
