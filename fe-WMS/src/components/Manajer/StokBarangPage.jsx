@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Card, Table, InputGroup, Form, Badge, Spinner, Modal, Button } from "react-bootstrap";
-import { FaSearch, FaInfoCircle } from "react-icons/fa";
+import { Card, Table, InputGroup, Form, Badge, Spinner, Modal, Button, Container, Row, Col } from "react-bootstrap";
+import { FaSearch, FaInfoCircle, FaBox } from "react-icons/fa";
 import { toast } from "react-toastify";
 import BarangService from "../../services/barangService";
 
@@ -43,19 +43,46 @@ export default function StokBarangPage() {
   if (loading) return <div className="text-center p-5"><Spinner animation="border" /></div>;
 
   return (
-    <>
-      <h3 className="mb-4">📦 Data Barang</h3>
-      <Card className="shadow-sm border-0" style={{ borderRadius: "16px" }}>
+    <Container fluid className="py-4">
+      {/* Header */}
+      <Row className="mb-4">
+        <Col>
+          <h1 className="fw-bold">
+            <FaBox className="me-2" />
+            Stok Barang
+          </h1>
+          <p className="text-muted">Lihat detail data dan stok barang di gudang.</p>
+        </Col>
+      </Row>
+
+      {/* Filter & Search */}
+      <Card className="mb-4 border-0 shadow-sm">
         <Card.Body>
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <span className="text-muted">Total: {filtered.length} barang</span>
-            <InputGroup style={{ maxWidth: 300 }}>
-              <InputGroup.Text><FaSearch /></InputGroup.Text>
-              <Form.Control placeholder="Cari Barang..." value={search} onChange={(e) => setSearch(e.target.value)} />
-            </InputGroup>
-          </div>
+          <Row>
+            <Col md={8}>
+              <InputGroup>
+                <InputGroup.Text>
+                  <FaSearch />
+                </InputGroup.Text>
+                <Form.Control
+                  placeholder="Cari Barang berdasarkan nama atau kode..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              </InputGroup>
+            </Col>
+            <Col md={4} className="d-flex align-items-center justify-content-end">
+               <span className="text-muted">Total: {filtered.length} barang</span>
+            </Col>
+          </Row>
+        </Card.Body>
+      </Card>
+
+      {/* Table */}
+      <Card className="border-0 shadow">
+        <Card.Body>
           <div style={{ overflowX: "auto" }}>
-            <Table hover responsive className="border-top">
+            <Table hover responsive>
               <thead className="table-dark">
                 <tr>
                   <th>#</th>
@@ -77,7 +104,11 @@ export default function StokBarangPage() {
                   <tr key={d.id}>
                     <td>{i + 1}</td>
                     <td><Badge bg="secondary" pill className="px-3 py-2 fw-normal">{d.kode_barang}</Badge></td>
-                    <td>{d.nama}</td>
+                    <td>
+                      <div>
+                        <strong>{d.nama}</strong>
+                      </div>
+                    </td>
                     <td>{d.satuan || "-"}</td>
                     <td>{d.kategori?.nama || "-"}</td>
                     <td>{d.gudang_rak || "-"}</td>
@@ -141,6 +172,6 @@ export default function StokBarangPage() {
           )}
         </Modal.Body>
       </Modal>
-    </>
+    </Container>
   );
 }

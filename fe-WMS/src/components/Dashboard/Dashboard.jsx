@@ -70,6 +70,7 @@ function LowStockTable({ items = [] }) {
       <Card className="shadow-sm h-100 border-0" style={{ borderRadius: "16px" }}>
         <Card.Header className="bg-white border-bottom-0 pt-4 px-4" style={{ borderRadius: "16px 16px 0 0" }}>
           <h5 className="fw-bold text-dark mb-0">Low Stock Alerts</h5>
+          <small className="text-muted">Stok di bawah batas minimum</small>
         </Card.Header>
         <Card.Body className="d-flex align-items-center justify-content-center text-muted" style={{ minHeight: 200 }}>
           Semua stok dalam kondisi aman 👍
@@ -79,22 +80,24 @@ function LowStockTable({ items = [] }) {
   }
 
   return (
-    <Card className="shadow-sm h-100 border-0" style={{ borderRadius: "16px" }}>
-      <Card.Header className="bg-white border-bottom-0 pt-4 px-4" style={{ borderRadius: "16px 16px 0 0" }}>
-        <div className="d-flex justify-content-between align-items-center">
-          <h5 className="fw-bold text-dark mb-0">Low Stock Alerts</h5>
-          <Badge bg="danger" className="rounded-pill">{items.length} item</Badge>
+    <Card className="shadow-sm h-100 border-0 mb-4" style={{ borderRadius: "16px" }}>
+      <Card.Header className="bg-white border-bottom-0 pt-4 px-4 pb-3" style={{ borderRadius: "16px 16px 0 0" }}>
+        <div className="d-flex justify-content-between align-items-start">
+          <div>
+            <h5 className="fw-bold text-dark mb-1">Low Stock Alerts</h5>
+            <small className="text-muted">Stok di bawah batas minimum</small>
+          </div>
+          <Badge bg="danger" className="rounded-pill px-3 py-2 shadow-sm">{items.length} item</Badge>
         </div>
-        <small className="text-muted">Stok di bawah batas minimum</small>
       </Card.Header>
-      <Card.Body className="p-0">
-        <Table hover responsive className="mb-0" size="sm">
-          <thead className="table-light">
+      <Card.Body className="p-0 pb-3">
+        <Table hover responsive className="mb-0" style={{ borderTop: "1px solid #f0f0f0" }}>
+          <thead className="bg-light text-dark">
             <tr>
-              <th style={{ fontSize: "0.75rem" }}>Barang</th>
-              <th style={{ fontSize: "0.75rem" }} className="text-center">Stok</th>
-              <th style={{ fontSize: "0.75rem" }} className="text-center">Min</th>
-              <th style={{ fontSize: "0.75rem" }}>Status</th>
+              <th className="border-0 px-4 py-3" style={{ borderRadius: "10px 0 0 10px" }}>Barang</th>
+              <th className="border-0 py-3 text-center">Stok</th>
+              <th className="border-0 py-3 text-center">Min</th>
+              <th className="border-0 px-4 py-3" style={{ borderRadius: "0 10px 10px 0" }}>Status</th>
             </tr>
           </thead>
           <tbody>
@@ -102,18 +105,20 @@ function LowStockTable({ items = [] }) {
               const pct = item.stok_min > 0 ? Math.round((item.stok / item.stok_min) * 100) : 0;
               const variant = pct <= 25 ? "danger" : pct <= 50 ? "warning" : "info";
               return (
-                <tr key={i}>
-                  <td style={{ fontSize: "0.8rem" }}>
-                    <div className="fw-semibold">{item.nama}</div>
+                <tr key={i} className="align-middle">
+                  <td className="px-4 py-3" style={{ borderBottom: "1px solid #f0f0f0" }}>
+                    <div className="fw-semibold text-dark">{item.nama}</div>
                     <small className="text-muted">{item.kode_barang}</small>
                   </td>
-                  <td className="text-center" style={{ fontSize: "0.8rem" }}>
-                    <span className="fw-bold text-danger">{item.stok}</span>
+                  <td className="py-3 text-center" style={{ borderBottom: "1px solid #f0f0f0" }}>
+                    <Badge bg="danger" className="rounded-pill px-3 py-2 fw-bold shadow-sm">{item.stok}</Badge>
                   </td>
-                  <td className="text-center" style={{ fontSize: "0.8rem" }}>{item.stok_min}</td>
-                  <td style={{ width: 120 }}>
-                    <ProgressBar now={pct} variant={variant} style={{ height: 6 }} />
-                    <small className="text-muted" style={{ fontSize: "0.65rem" }}>{pct}%</small>
+                  <td className="py-3 text-center text-muted" style={{ borderBottom: "1px solid #f0f0f0" }}>{item.stok_min}</td>
+                  <td className="px-4 py-3" style={{ borderBottom: "1px solid #f0f0f0", minWidth: 150 }}>
+                    <div className="d-flex align-items-center gap-2">
+                      <ProgressBar now={pct} variant={variant} style={{ height: 8, flexGrow: 1, borderRadius: 4 }} />
+                      <small className="text-muted fw-semibold" style={{ width: 35, textAlign: 'right' }}>{pct}%</small>
+                    </div>
                   </td>
                 </tr>
               );
@@ -133,6 +138,7 @@ function TopSupplierTable({ suppliers = [] }) {
       <Card className="shadow-sm h-100 border-0" style={{ borderRadius: "16px" }}>
         <Card.Header className="bg-white border-bottom-0 pt-4 px-4" style={{ borderRadius: "16px 16px 0 0" }}>
           <h5 className="fw-bold text-dark mb-0">Supplier Paling Aktif</h5>
+          <small className="text-muted">Berdasarkan total transaksi yang disetujui</small>
         </Card.Header>
         <Card.Body className="d-flex align-items-center justify-content-center text-muted" style={{ minHeight: 200 }}>
           Belum ada data supplier
@@ -142,37 +148,42 @@ function TopSupplierTable({ suppliers = [] }) {
   }
 
   return (
-    <Card className="shadow-sm h-100 border-0" style={{ borderRadius: "16px" }}>
-      <Card.Header className="bg-white border-bottom-0 pt-4 px-4" style={{ borderRadius: "16px 16px 0 0" }}>
-        <h5 className="fw-bold text-dark mb-0">Supplier Paling Aktif</h5>
+    <Card className="shadow-sm h-100 border-0 mb-4" style={{ borderRadius: "16px" }}>
+      <Card.Header className="bg-white border-bottom-0 pt-4 px-4 pb-3" style={{ borderRadius: "16px 16px 0 0" }}>
+        <h5 className="fw-bold text-dark mb-1">Supplier Paling Aktif</h5>
         <small className="text-muted">Berdasarkan total transaksi yang disetujui</small>
       </Card.Header>
-      <Card.Body className="p-0">
-        <Table hover responsive className="mb-0" size="sm">
-          <thead className="table-light">
+      <Card.Body className="p-0 pb-3">
+        <Table hover responsive className="mb-0" style={{ borderTop: "1px solid #f0f0f0" }}>
+          <thead className="bg-light text-dark">
             <tr>
-              <th style={{ fontSize: "0.75rem" }}>#</th>
-              <th style={{ fontSize: "0.75rem" }}>Supplier</th>
-              <th style={{ fontSize: "0.75rem" }} className="text-center">Transaksi</th>
-              <th style={{ fontSize: "0.75rem" }} className="text-center">Total Unit</th>
+              <th className="border-0 px-4 py-3" style={{ width: 60, borderRadius: "10px 0 0 10px" }}>#</th>
+              <th className="border-0 py-3">Supplier</th>
+              <th className="border-0 py-3 text-center">Transaksi</th>
+              <th className="border-0 px-4 py-3 text-center" style={{ borderRadius: "0 10px 10px 0" }}>Total Unit</th>
             </tr>
           </thead>
           <tbody>
             {suppliers.map((s, i) => (
-              <tr key={i}>
-                <td style={{ fontSize: "0.8rem" }}>
-                  <Badge bg={i === 0 ? "warning" : i === 1 ? "secondary" : "light"} text={i > 1 ? "dark" : undefined} className="rounded-circle" style={{ width: 24, height: 24, lineHeight: "16px" }}>
+              <tr key={i} className="align-middle">
+                <td className="px-4 py-3" style={{ borderBottom: "1px solid #f0f0f0" }}>
+                  <div className="d-flex align-items-center justify-content-center fw-bold shadow-sm"
+                       style={{ 
+                         width: 28, height: 28, borderRadius: "50%",
+                         backgroundColor: i === 0 ? "#fbbf24" : i === 1 ? "#9ca3af" : i === 2 ? "#d1d5db" : "#f3f4f6",
+                         color: i < 3 ? "white" : "#4b5563"
+                       }}>
                     {i + 1}
-                  </Badge>
+                  </div>
                 </td>
-                <td style={{ fontSize: "0.8rem" }}>
-                  <div className="fw-semibold">{s.nama_supplier}</div>
+                <td className="py-3" style={{ borderBottom: "1px solid #f0f0f0" }}>
+                  <div className="fw-semibold text-dark">{s.nama_supplier}</div>
                   <small className="text-muted">{s.kota || "-"}</small>
                 </td>
-                <td className="text-center" style={{ fontSize: "0.8rem" }}>
-                  <Badge bg="primary" className="rounded-pill">{s.total_transaksi}</Badge>
+                <td className="py-3 text-center" style={{ borderBottom: "1px solid #f0f0f0" }}>
+                  <Badge bg="primary" className="rounded-pill px-3 py-2 shadow-sm">{s.total_transaksi}</Badge>
                 </td>
-                <td className="text-center fw-semibold" style={{ fontSize: "0.8rem" }}>
+                <td className="px-4 py-3 text-center fw-bold text-dark" style={{ borderBottom: "1px solid #f0f0f0" }}>
                   {formatNumber(s.total_unit)}
                 </td>
               </tr>
