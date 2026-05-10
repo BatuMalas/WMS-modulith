@@ -1,6 +1,8 @@
 /* Fixed Layout */
+html,
 body {
-  padding-top: 64px; /* Height of navbar */
+  margin: 0;
+  padding: 0;
   background-color: #f4f7fe;
 }
 

@@ -1,3 +1,11 @@
+# =============================================================
+# WMS Modular Monolith — Docker Compose
+# =============================================================
+# Variabel Kontrol Tesis:
+#   - App service dibatasi 2 vCPU dan 2GB RAM
+#   - Sesuai kondisi pengujian beban Bab III
+# =============================================================
+
 services:
   app:
     build:
@@ -19,9 +27,9 @@ services:
       DB_PASSWORD: root
       JWT_SECRET: K4Si9vNYmdFYtwfMrF7IR1yq9JxsrgcJXlresry5b2JdwJ4waHFZuDpwfdeUatOp
       JWT_ALGO: HS256
-      SESSION_DRIVER: database
-      CACHE_STORE: database
-      QUEUE_CONNECTION: database
+      SESSION_DRIVER: cookie
+      CACHE_STORE: array
+      QUEUE_CONNECTION: sync
     volumes:
       - .:/var/www
     depends_on:
@@ -29,6 +37,18 @@ services:
         condition: service_healthy
     networks:
       - wms-network
+    # ─── Resource Limits (Variabel Kontrol Tesis) ─────────────
+    # Syntax yang benar untuk docker compose (bukan Swarm):
+    #   cpus dan mem_limit di level service langsung
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'      # 2 vCPU
+          memory: 2G       # 2 GB RAM
+    # Untuk docker compose v2 style (lebih kompatibel):
+    cpus: 2.0
+    mem_limit: 2g
+    memswap_limit: 2g
 
   mysql:
     image: mysql:8.0

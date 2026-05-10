@@ -124,7 +124,7 @@ class TransaksiService implements TransactionServiceInterface
             return false;
         }
 
-        return DB::transaction(function () use ($transaksi) {
+        $result = DB::transaction(function () use ($transaksi) {
             $transaksi->update([
                 'status' => 'diterima',
                 'approved_by' => Auth::id(),
@@ -149,21 +149,17 @@ class TransaksiService implements TransactionServiceInterface
                 );
             } elseif ($transaksi->jenis === 'keluar') {
                 // BARANG KELUAR → Kurangi dari batch tertua (FIFO)
-                $result = $this->inventoryService->kurangiStok(
+                $res = $this->inventoryService->kurangiStok(
                     $transaksi->barang_id,
                     $transaksi->jumlah,
                     $transaksi->id
                 );
 
-                if ($result === false) {
+                if ($res === false) {
                     throw new \Exception('Stok tidak mencukupi untuk transaksi keluar.');
                 }
 
-                $fifoDetail = $result['fifo_detail'] ?? [];
-
-                // Auto-generate invoice PDF
-                $invoiceGenerated = $this->generateInvoiceKeluar($transaksi, $fifoDetail);
-                $transaksi->update(['invoice_generated' => $invoiceGenerated]);
+                $fifoDetail = $res['fifo_detail'] ?? [];
             }
 
             // Log activity
@@ -174,10 +170,18 @@ class TransaksiService implements TransactionServiceInterface
                 $transaksi
             );
 
-            $transaksi->load(['barang', 'supplier', 'customer', 'approvedByUser', 'gudang']);
-
-            return $transaksi;
+            return ['fifo_detail' => $fifoDetail];
         });
+
+        // Generate PDF OUTSIDE transaction to avoid holding DB locks during slow I/O
+        if ($transaksi->jenis === 'keluar') {
+            $invoiceGenerated = $this->generateInvoiceKeluar($transaksi, $result['fifo_detail']);
+            $transaksi->update(['invoice_generated' => $invoiceGenerated]);
+        }
+
+        $transaksi->load(['barang', 'supplier', 'customer', 'approvedByUser', 'gudang']);
+
+        return $transaksi;
     }
 
     /**

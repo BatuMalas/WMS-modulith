@@ -170,6 +170,6 @@ class StockBatch extends Model
             $nextNumber = 1;
         }
 
-        return sprintf("BTH-%s-%03d", $date, $nextNumber);
+        return sprintf("BTH-%s-%03d-%s", $date, $nextNumber, strtoupper(bin2hex(random_bytes(2))));
     }
 }

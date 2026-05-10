@@ -97,7 +97,14 @@ class BarangService implements InventoryServiceInterface
             return null;
         }
 
-        return DB::transaction(function () use ($barang, $jumlah, $batchData) {
+        return DB::transaction(function () use ($id, $jumlah, $batchData) {
+            // Lock the barang record
+            $barang = Barang::lockForUpdate()->find($id);
+
+            if (!$barang) {
+                return null;
+            }
+
             $stokLama = $barang->stok;
 
             // Buat batch baru
@@ -145,36 +152,44 @@ class BarangService implements InventoryServiceInterface
             return null;
         }
 
-        // Cek total stok cukup — auto-migrate legacy data jika perlu
-        $totalAvailable = $barang->stockBatches()->available()->sum('sisa_stok');
+        return DB::transaction(function () use ($id, $jumlah, $transaksiKeluarId) {
+            // Lock the barang record to prevent concurrent updates to this item
+            $barang = Barang::lockForUpdate()->find($id);
 
-        // Auto-create batch untuk data lama yang belum punya batch
-        if ($totalAvailable == 0 && $barang->stok > 0) {
-            StockBatch::create([
-                'kode_batch' => StockBatch::generateKodeBatch(),
-                'barang_id' => $barang->id,
-                'jumlah_masuk' => $barang->stok,
-                'sisa_stok' => $barang->stok,
-                'tanggal_masuk' => $barang->created_at ?? Carbon::today(),
-                'keterangan' => 'Auto-migrated dari data legacy',
-            ]);
-            $totalAvailable = $barang->stok;
-        }
+            if (!$barang) {
+                return null;
+            }
 
-        if ($jumlah > $totalAvailable) {
-            return false;
-        }
+            // Cek total stok cukup (INSIDE transaction with lock)
+            $totalAvailable = $barang->stockBatches()->available()->sum('sisa_stok');
 
-        return DB::transaction(function () use ($barang, $jumlah, $transaksiKeluarId) {
+            // Auto-create batch untuk data lama yang belum punya batch (INSIDE transaction)
+            if ($totalAvailable == 0 && $barang->stok > 0) {
+                StockBatch::create([
+                    'kode_batch' => StockBatch::generateKodeBatch(),
+                    'barang_id' => $barang->id,
+                    'jumlah_masuk' => $barang->stok,
+                    'sisa_stok' => $barang->stok,
+                    'tanggal_masuk' => $barang->created_at ?? Carbon::today(),
+                    'keterangan' => 'Auto-migrated dari data legacy',
+                ]);
+                $totalAvailable = $barang->stok;
+            }
+
+            if ($jumlah > $totalAvailable) {
+                return false;
+            }
+
             $stokLama = $barang->stok;
             $sisaYangPerluDiambil = $jumlah;
             $batchesUsed = [];
 
-            // Ambil batch-batch available, urutkan:
+            // Ambil batch-batch available dengan LOCK
             // 1. Yang punya expiry date → urut dari yang paling dekat expired (FEFO)
             // 2. Yang tanpa expiry date → urut dari yang paling lama masuk (FIFO)
             $batches = $barang->stockBatches()
                 ->available()
+                ->lockForUpdate()
                 ->orderByRaw('CASE WHEN tanggal_kadaluarsa IS NULL THEN 1 ELSE 0 END')
                 ->orderBy('tanggal_kadaluarsa', 'asc')
                 ->orderBy('tanggal_masuk', 'asc')

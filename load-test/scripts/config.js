@@ -15,7 +15,7 @@ export const BASE_URL = __ENV.BASE_URL || 'http://localhost:8000/api';
 // ─── Akun Test ───────────────────────────────────────────────
 // Staff account (untuk membuat transaksi)
 export const STAFF_CREDENTIALS = {
-  username: __ENV.STAFF_USER || 'staff1',
+  username: __ENV.STAFF_USER || 'petugas1',
   password: __ENV.STAFF_PASS || 'password',
 };
 
@@ -32,37 +32,70 @@ export const ADMIN_CREDENTIALS = {
 };
 
 // ─── Dataset Constants ───────────────────────────────────────
-export const TOTAL_BARANG = 250;   // Jumlah barang di database
-export const TOTAL_SUPPLIER = 15;  // Jumlah supplier di database
-export const TOTAL_CUSTOMER = 10;  // Jumlah customer di database
-export const TOTAL_GUDANG = 5;     // Jumlah gudang di database
+// Sesuai RealisticDataSeeder yang telah direvisi:
+export const TOTAL_BARANG = 200;   // 200 produk pertanian
+export const TOTAL_SUPPLIER = 10;  // 10 supplier
+export const TOTAL_CUSTOMER = 10;  // 10 customer
+export const TOTAL_GUDANG = 3;     // 3 gudang
+export const TOTAL_USERS = 10;     // 1 admin + 3 manajer + 6 staff
 
 // ─── Stages Configuration ────────────────────────────────────
+
 /**
- * Konfigurasi bertahap:
- *  - Fase 1: Ramp-up ke 50 RPS   → 60 detik
- *  - Fase 2: Ramp-up ke 100 RPS  → 90 detik
- *  - Fase 3: Ramp-up ke 200 RPS  → 120 detik
- *  - Fase 4: Ramp-down            → 30 detik
+ * Stage gabungan: semua fase dalam satu run (untuk run-all.js)
+ * Total: ~330 detik per skenario
  */
 export const LOAD_STAGES = [
   // ── Warm-up ──
   { duration: '10s', target: 10 },
 
-  // ── Fase 1: 50 RPS ──
+  // ── Fase 1: 50 RPS (sustain 60s) ──
   { duration: '10s', target: 50 },   // ramp-up
   { duration: '60s', target: 50 },   // sustain
 
-  // ── Fase 2: 100 RPS ──
+  // ── Fase 2: 100 RPS (sustain 90s) ──
   { duration: '10s', target: 100 },  // ramp-up
   { duration: '90s', target: 100 },  // sustain
 
-  // ── Fase 3: 200 RPS ──
+  // ── Fase 3: 200 RPS (sustain 120s) ──
   { duration: '15s', target: 200 },  // ramp-up
   { duration: '120s', target: 200 }, // sustain
 
   // ── Cool-down ──
   { duration: '15s', target: 0 },    // ramp-down
+];
+
+/**
+ * Stage 50 RPS saja (untuk pengujian per-fase)
+ * Durasi: 90 detik sustain
+ */
+export const STAGES_50RPS = [
+  { duration: '10s', target: 10 },   // warm-up
+  { duration: '10s', target: 50 },   // ramp-up
+  { duration: '90s', target: 50 },   // sustain 90s
+  { duration: '10s', target: 0 },    // cool-down
+];
+
+/**
+ * Stage 100 RPS saja (untuk pengujian per-fase)
+ * Durasi: 90 detik sustain
+ */
+export const STAGES_100RPS = [
+  { duration: '10s', target: 20 },   // warm-up
+  { duration: '15s', target: 100 },  // ramp-up
+  { duration: '90s', target: 100 },  // sustain 90s
+  { duration: '10s', target: 0 },    // cool-down
+];
+
+/**
+ * Stage 200 RPS saja (untuk pengujian per-fase)
+ * Durasi: 120 detik sustain
+ */
+export const STAGES_200RPS = [
+  { duration: '10s', target: 30 },   // warm-up
+  { duration: '20s', target: 200 },  // ramp-up
+  { duration: '120s', target: 200 }, // sustain 120s
+  { duration: '15s', target: 0 },    // cool-down
 ];
 
 // ─── Thresholds Standar ──────────────────────────────────────
@@ -111,26 +144,27 @@ export function login(credentials) {
 
   const res = http.post(`${BASE_URL}/auth/login`, loginPayload, getJsonHeaders());
 
-  const success = check(res, {
-    'login berhasil (status 200)': (r) => r.status === 200,
-    'login response memiliki token': (r) => {
-      try {
-        const body = JSON.parse(r.body);
-        return body.data && body.data.token;
-      } catch (e) {
-        return false;
-      }
-    },
-  });
-
-  if (!success) {
+  // Cek status 200 dulu
+  if (res.status !== 200) {
     console.error(`Login gagal untuk user: ${credentials.username}`);
     console.error(`Status: ${res.status}, Body: ${res.body}`);
     return null;
   }
 
-  const body = JSON.parse(res.body);
-  return body.data.token;
+  // API mengembalikan: { success: true, data: { access_token: "...", ... } }
+  try {
+    const body = JSON.parse(res.body);
+    const token = body.data && (body.data.access_token || body.data.token);
+    if (!token) {
+      console.error(`Token tidak ditemukan di response untuk: ${credentials.username}`);
+      console.error(`Body: ${res.body}`);
+      return null;
+    }
+    return token;
+  } catch (e) {
+    console.error(`Gagal parse response login: ${e.message}`);
+    return null;
+  }
 }
 
 // ─── Data Generators ─────────────────────────────────────────

@@ -86,7 +86,7 @@ function RoleRoute({ roles, children }) {
 // Main layout with navbar + sidebar
 function AppLayout() {
   return (
-    <div className="app" style={{ minHeight: "100vh" }}>
+    <div className="app" style={{ minHeight: "100vh", paddingTop: "64px" }}>
       <Navbar />
       <div className="d-flex">
         <Sidebar />
