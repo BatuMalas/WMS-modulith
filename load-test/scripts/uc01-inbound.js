@@ -1,27 +1,27 @@
 /**
- * ============================================================
- * UC-01: Inbound / Receiving Load Test
- * ============================================================
- * Skenario:
- *   Mengetes kinerja sistem saat mencatat barang masuk dan
- *   memperbarui stok sekaligus (create transaksi masuk + approve).
- *
- * Alur per VU (Virtual User):
- *   1. Login sebagai staff → buat transaksi masuk (POST /api/transaksi)
- *   2. Login sebagai manajer → approve transaksi (PUT /api/transaksi/{id}/approve)
- *   3. Verifikasi dashboard ter-update (GET /api/dashboard)
- *
- * Beban:
- *   50 RPS → 100 RPS → 200 RPS (bertahap)
- *
- * Metrik:
- *   - http_req_duration (latency mean & p95)
- *   - http_reqs (throughput)
- *   - http_req_failed (error rate)
- *   - Custom: uc01_inbound_create_duration
- *   - Custom: uc01_inbound_approve_duration
- *   - Custom: uc01_inbound_e2e_duration
- */
+* ============================================================
+* UC-01: Inbound / Receiving Load Test
+* ============================================================
+* Skenario:
+*   Mengetes kinerja sistem saat mencatat barang masuk dan
+*   memperbarui stok sekaligus (create transaksi masuk + approve).
+*
+* Alur per VU (Virtual User):
+*   1. Login sebagai staff → buat transaksi masuk (POST /api/transaksi)
+*   2. Login sebagai manajer → approve transaksi (PUT /api/transaksi/{id}/approve)
+*   3. Verifikasi dashboard ter-update (GET /api/dashboard)
+*
+* Beban:
+*   50 RPS → 100 RPS → 200 RPS (bertahap)
+*
+* Metrik:
+*   - http_req_duration (latency mean & p95)
+*   - http_reqs (throughput)
+*   - http_req_failed (error rate)
+*   - Custom: uc01_inbound_create_duration
+*   - Custom: uc01_inbound_approve_duration
+*   - Custom: uc01_inbound_e2e_duration
+*/
 
 import http from 'k6/http';
 import { check, sleep, group } from 'k6';

@@ -44,7 +44,7 @@ export default function LoginPage() {
                     <Col md={5} lg={4}>
                         <div className="text-center mb-4">
                             <FaWarehouse size={48} className="text-white mb-3" />
-                            <h2 className="text-white fw-bold">WMS Login</h2>
+                            <h2 className="text-white fw-bold">WMS Login (Modulith)</h2>
                             <p className="text-white-50">Warehouse Management System</p>
                         </div>
 
