@@ -17,7 +17,7 @@ services:
       - "8000:8000"
     environment:
       APP_ENV: local
-      APP_DEBUG: "true"
+      APP_DEBUG: "false"      # ← matikan debug agar tidak generate stack traces tiap request
       APP_KEY: base64:RpEzPp1B9yud2sE1FKSWJ0KL3B+8G8/pdRfZ6iWBrvs=
       DB_CONNECTION: mysql
       DB_HOST: mysql
@@ -27,11 +27,12 @@ services:
       DB_PASSWORD: root
       JWT_SECRET: K4Si9vNYmdFYtwfMrF7IR1yq9JxsrgcJXlresry5b2JdwJ4waHFZuDpwfdeUatOp
       JWT_ALGO: HS256
-      SESSION_DRIVER: cookie
-      CACHE_STORE: array
+      SESSION_DRIVER: cookie   # ← tidak buat DB query, paling cepat
+      CACHE_STORE: array       # ← in-memory, tidak ada overhead I/O
       QUEUE_CONNECTION: sync
     volumes:
       - .:/var/www
+      - vendor_modulith:/var/www/vendor   # ← vendor di Docker volume, bukan Windows filesystem
     depends_on:
       mysql:
         condition: service_healthy
@@ -117,6 +118,8 @@ services:
       - wms-network
 
 volumes:
+  vendor_modulith:         # Named volume untuk folder vendor (mencegah I/O lambat dari Windows)
+    driver: local
   wms_mysql_data:
     driver: local
 
