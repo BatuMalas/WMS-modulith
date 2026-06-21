@@ -96,6 +96,9 @@ docker ps
 ```powershell
 docker exec wms-app php artisan db:seed --class=RealisticDataSeeder --force
 ```
+```powershell
+docker compose exec app php artisan migrate:fresh --seeder=RealisticDataSeeder
+```
 
 Proses ini memakan waktu ~1-2 menit. Tunggu hingga muncul output:
 

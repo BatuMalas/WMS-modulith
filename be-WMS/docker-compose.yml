@@ -93,6 +93,10 @@ services:
       - "3000:3000"
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
+    volumes:
+      - grafana_data:/var/lib/grafana                                          # ← data persistent (dashboard, user, dll)
+      - ./docker/grafana/provisioning:/etc/grafana/provisioning:ro             # ← provisioning datasource & dashboard
     depends_on:
       - prometheus
     networks:
@@ -121,6 +125,8 @@ volumes:
   vendor_modulith:         # Named volume untuk folder vendor (mencegah I/O lambat dari Windows)
     driver: local
   wms_mysql_data:
+    driver: local
+  grafana_data:            # Named volume untuk data Grafana (dashboard, user, plugin tidak hilang saat restart)
     driver: local
 
 networks:
