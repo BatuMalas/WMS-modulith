@@ -37,3 +37,6 @@ fe-WMS/.env.production
 
 # Docker volumes
 be-WMS/wms_mysql_data/
+
+# ─── Load Test Results ───
+load-test/results/
